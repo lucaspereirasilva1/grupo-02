@@ -1,6 +1,7 @@
 package br.com.meli.desafiospring.util;
 
 import br.com.meli.desafiospring.model.entity.Consulta;
+import br.com.meli.desafiospring.model.entity.Medico;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -21,5 +22,13 @@ public class ArquivoUtil {
     public static List jsonToCollection(File file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(file, new TypeReference<List>() {});
+    }
+
+    // Utilidado no medico Service
+    public static void collectionToJsonMedico(File file, List<Medico> users) throws IOException {
+        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.findAndRegisterModules();
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.writeValue(file, users);
     }
 }
