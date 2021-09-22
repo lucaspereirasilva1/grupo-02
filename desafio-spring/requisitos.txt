@@ -1,0 +1,63 @@
+DESAFIO SPRING - 22/09/2021 (VETERINARIA)
+
+Paciente - responsavel(Rafael)
+id(gerado automaticamente)
+especie
+raca
+cor
+data nascimento
+nome
+
+cadastrar/editar pacientes - endpoint
+todos os campos obrigatórios
+proprietario com consultar nao podem ser excluidos
+
+listarPacientes - endpoint
+ordem crescente do nome do proprietario
+
+Proprietario - responsavel(Ed)
+cpf(com a máscara ###.###.###-##)
+nome
+sobrenome
+data nascimento
+endereco
+telefone
+
+cadastrar/editar proprietario - endpoint
+sem duplicidade
+todos os campos obrigatórios
+proprietario com consultar nao podem ser excluidos
+
+Consulta - responsavel(Lucas)
+data e hora
+motivo
+diagnostico
+tratamento
+medico
+paciente
+
+criar/ editar consultas - endpoint
+medico, paciente, data e hora e motivo obrigatorios
+
+listarConsultas - endpoint
+ordem decrescente pela data consulta
+
+listarConsultaMedico - endpoint
+total consulta de cada medico
+
+listarConsultaDia - endpoint
+mostrar dados relevantes animal, proprietario e medico; ordem crescente de data e hora
+
+Medico - responsavel(Jhony)
+cpf(com a máscara ###.###.###-##)
+nome
+sobrenome
+registro
+especialidade
+
+cadastrar/editar medicos - endpoint
+sem duplicidade
+todos os campos obrigatórios
+medicos com consultar nao podem ser excluidos
+
+OBS: registro devem ser mantidos em json/txt; uma pessoa pode ter varios animais
