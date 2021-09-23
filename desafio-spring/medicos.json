@@ -1,15 +1,8 @@
 [ {
   "id" : 1,
-  "cpf" : "234.765.378-28",
-  "nome" : "Roberto",
-  "sobrenome" : "Carlos",
-  "registro" : "CRM12345",
-  "especialidade" : "cirurgia geral"
-}, {
-  "id" : 2,
-  "cpf" : "432.555.378-45",
-  "nome" : "Lulu",
-  "sobrenome" : "Santos",
-  "registro" : "CRM54321",
-  "especialidade" : "clinico geral"
+  "cpf" : "132.666.378-99",
+  "nome" : "Luiza",
+  "sobrenome" : "Sonza",
+  "registro" : "CRM54355",
+  "especialidade" : "ortopedista"
 } ]

@@ -1,6 +1,8 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.model.dto.ConsultaDTO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
+import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MedicoService {
@@ -36,4 +39,26 @@ public class MedicoService {
         return modelMapper.map(medicoDTO, Medico.class);
     }
 
+    private MedicoDTO converteMedicoDTO(Medico medico) {
+        return modelMapper.map(medico, MedicoDTO.class);
+    }
+
+    public MedicoDTO editar(MedicoDTO medicoDTO, Integer id) {
+        Optional<Medico> optionalMedico = listaMedico.stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst();
+        Medico medico = optionalMedico.orElse(null);
+        assert medico != null;
+        medico.setCpf(medicoDTO.getCpf());
+                medico.setNome(medicoDTO.getNome());
+                medico.setSobrenome(medicoDTO.getSobrenome());
+                medico.setRegistro(medicoDTO.getRegistro());
+                medico.setEspecialidade(medicoDTO.getEspecialidade());
+        try {
+            ArquivoUtil.collectionToJsonMedico(file, listaMedico);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return converteMedicoDTO(medico);
+    }
 }
