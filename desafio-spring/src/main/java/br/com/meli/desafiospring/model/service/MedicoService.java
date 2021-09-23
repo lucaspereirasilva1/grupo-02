@@ -5,16 +5,13 @@ import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MedicoService {
@@ -26,15 +23,26 @@ public class MedicoService {
 
     public MedicoDTO cadastrar(MedicoDTO medicoDTO){
         Medico medico = converteMedico(medicoDTO);
-        medico.setId(listaMedico.size() + 1);
-        listaMedico.add(medico);
-        try {
-            ArquivoUtil.collectionToJsonMedico(file, listaMedico);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            medico.setId(listaMedico.size() + 1);
+            listaMedico.add(medico);
+            try {
+                ArquivoUtil.collectionToJsonMedico(file, listaMedico);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         return medicoDTO;
     }
+
+    public boolean validar(MedicoDTO medicoDTO){
+        if (medicoDTO.getCpf()!= null && medicoDTO.getNome()!=null && medicoDTO.getSobrenome()!=null
+            && medicoDTO.getRegistro()!=null && medicoDTO.getEspecialidade()!=null) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 
     public Medico converteMedico(MedicoDTO medicoDTO) {
         return modelMapper.map(medicoDTO, Medico.class);
@@ -63,19 +71,18 @@ public class MedicoService {
         return converteMedicoDTO(medico);
     }
 
-
     public boolean removerMedico(Integer id) {
         for (Medico m : listaMedico) {
             if (m.getId().equals(id))
                 return listaMedico.remove(m);
         }
         return false;
+    }
 
     public static Medico buscaMedico(String registro) {
         Optional<Medico> optionalMedico = listaMedico.stream()
                 .filter(c -> c.getRegistro().equals(registro))
                 .findFirst();
         return optionalMedico.orElse(null);
-
     }
 }
