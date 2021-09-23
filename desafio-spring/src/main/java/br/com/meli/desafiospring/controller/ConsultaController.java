@@ -1,6 +1,7 @@
 package br.com.meli.desafiospring.controller;
 
 import br.com.meli.desafiospring.model.dto.ConsultaDTO;
+import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.service.ConsultaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,11 @@ public class ConsultaController {
         ConsultaDTO dto = consultaService.editar(consultaDTO, id);
         URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(consultaService.getListaConsulta().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
+    }
+
+    @GetMapping(value = "/listaconsulta")
+    public List<ConsultaDTO> listarConsulta() {
+        return consultaService.listar();
     }
 
 }

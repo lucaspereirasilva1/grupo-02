@@ -6,14 +6,18 @@ import br.com.meli.desafiospring.model.entity.IConsulta;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ConsultaService {
@@ -57,4 +61,17 @@ public class ConsultaService {
         }
         return converteConsultaDTO(consulta);
     }
+
+    public List<ConsultaDTO> listar() {
+        return listaConvertDTO(listaConsulta.stream()
+                .sorted((c1, c2) -> c2.getDataHora().compareTo(c1.getDataHora()))
+                .collect(Collectors.toList()));
+    }
+
+    public List<ConsultaDTO> listaConvertDTO(List<Consulta> listaConsulta) {
+        Type listType = new TypeToken<List<ConsultaDTO>>() {}.getType();
+        return modelMapper.map(listaConsulta, listType);
+    }
+
+
 }
