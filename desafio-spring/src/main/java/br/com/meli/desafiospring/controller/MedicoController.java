@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/medico")
@@ -29,5 +30,10 @@ public class MedicoController {
         MedicoDTO dto = medicoService.editar(medicoDTO, id);
         URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(medicoService.getListaMedico().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
+    }
+
+    @DeleteMapping(value="/deleta/{id}")
+    public String removerMedico(@PathVariable("id") Integer id){
+        return medicoService.removerMedico(id) ? "Medico removido" : "Medico nao removido";
     }
 }

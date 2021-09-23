@@ -7,13 +7,16 @@ import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicoService {
@@ -21,6 +24,7 @@ public class MedicoService {
     private final ModelMapper modelMapper = new ModelMapper();
     @Getter
     private final List<Medico> listaMedico = new ArrayList<>();
+    
     private final File file = new File("medicos.json");
 
     public MedicoDTO cadastrar(MedicoDTO medicoDTO){
@@ -60,5 +64,13 @@ public class MedicoService {
             e.printStackTrace();
         }
         return converteMedicoDTO(medico);
+    }
+
+    public boolean removerMedico(Integer id) {
+        for (Medico m : listaMedico) {
+            if (m.getId().equals(id))
+                return listaMedico.remove(m);
+        }
+        return false;
     }
 }
