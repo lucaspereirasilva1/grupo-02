@@ -14,6 +14,7 @@ public class Consulta implements IConsulta{
     private String motivo;
     private String diagnostico;
     private String tratamento;
+    private Medico medico;
 
     @Override
     public IConsulta comId(Integer id) {
@@ -42,6 +43,12 @@ public class Consulta implements IConsulta{
     @Override
     public IConsulta comTratamento(String tratamento) {
         this.tratamento = tratamento;
+        return this;
+    }
+
+    @Override
+    public IConsulta comMedico(Medico medico) {
+        this.medico = medico;
         return this;
     }
 

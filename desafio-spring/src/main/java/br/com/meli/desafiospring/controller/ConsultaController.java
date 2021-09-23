@@ -1,7 +1,7 @@
 package br.com.meli.desafiospring.controller;
 
-import br.com.meli.desafiospring.model.dto.ConsultaDTO;
-import br.com.meli.desafiospring.model.entity.Consulta;
+import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
+import br.com.meli.desafiospring.model.dto.ConsultaResponseDTO;
 import br.com.meli.desafiospring.model.service.ConsultaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +19,27 @@ public class ConsultaController {
     private ConsultaService consultaService;
 
     @PostMapping(value = "/cadastro", produces = "application/json")
-    public ResponseEntity<ConsultaDTO> cadastrarConsulta(@RequestBody ConsultaDTO consultaDTO, UriComponentsBuilder uriComponentsBuilder) {
-        ConsultaDTO dto = consultaService.cadastrar(consultaDTO);
+    public ResponseEntity<ConsultaResponseDTO> cadastrarConsulta(@RequestBody ConsultaRequestDTO consultaRequestDTO, UriComponentsBuilder uriComponentsBuilder) {
+        ConsultaResponseDTO dto = consultaService.cadastrar(consultaRequestDTO);
         URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(consultaService.getListaConsulta().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping(value = "/manutencao/{id}", produces = "application/json")
-    public ResponseEntity<ConsultaDTO> editarConsulta(@RequestBody ConsultaDTO consultaDTO, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
-        ConsultaDTO dto = consultaService.editar(consultaDTO, id);
+    public ResponseEntity<ConsultaResponseDTO> editarConsulta(@RequestBody ConsultaRequestDTO consultaDTO, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
+        ConsultaResponseDTO dto = consultaService.editar(consultaDTO, id);
         URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(consultaService.getListaConsulta().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @GetMapping(value = "/listaconsulta")
-    public List<ConsultaDTO> listarConsulta() {
+    public List<ConsultaResponseDTO> listarConsulta() {
         return consultaService.listar();
+    }
+
+    @GetMapping(value = "/listaconsultamedico")
+    public List<String> listarConsultaMedicos() {
+        return consultaService.listarTotalMedicos();
     }
 
 }

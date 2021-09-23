@@ -1,7 +1,15 @@
 [ {
   "id" : 1,
-  "dataHora" : "2021-09-22T18:39:05.829185",
-  "motivo" : "teste",
-  "diagnostico" : "teste",
-  "tratamento" : "teste3"
+  "dataHora" : "2021-09-23T17:04:38.40712",
+  "motivo" : "teste4",
+  "diagnostico" : "teste4",
+  "tratamento" : "teste4",
+  "medico" : {
+    "id" : 1,
+    "cpf" : "43255537845",
+    "nome" : "Lele",
+    "sobrenome" : "Santos",
+    "registro" : "CRM3",
+    "especialidade" : "clinico geral"
+  }
 } ]
