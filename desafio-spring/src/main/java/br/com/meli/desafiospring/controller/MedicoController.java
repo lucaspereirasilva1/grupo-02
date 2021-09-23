@@ -1,8 +1,6 @@
 package br.com.meli.desafiospring.controller;
 
-import br.com.meli.desafiospring.model.dto.ConsultaDTO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
-import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.service.MedicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
