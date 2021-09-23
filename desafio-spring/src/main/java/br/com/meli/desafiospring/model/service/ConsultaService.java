@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,4 +114,20 @@ public class ConsultaService {
     }
 
 
+    public List<ConsultaResponseDTO> listarPorDia(String data) {
+        LocalDate dataConsulta = LocalDate.parse(data);
+        List<ConsultaResponseDTO> listaConsultaResponseDTO = new ArrayList<>();
+        List<Consulta> retornoListaConsultas = listaConsulta.stream()
+                .filter(c -> c.getDataHora().getDayOfMonth() == dataConsulta.getDayOfMonth())
+                .filter(c -> c.getDataHora().getMonth() == dataConsulta.getMonth())
+                .filter(c -> c.getDataHora().getYear() == dataConsulta.getYear())
+                .collect(Collectors.toList());
+        for (Consulta c : retornoListaConsultas) {
+            ConsultaResponseDTO consultaResponseDTO = converteConsultaResponseDTO(c);
+            consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(c.getMedico()));
+            listaConsultaResponseDTO.add(consultaResponseDTO);
+        }
+        listaConsultaResponseDTO.sort(Comparator.comparing(ConsultaResponseDTO::getDataHora));
+        return listaConsultaResponseDTO;
+    }
 }
