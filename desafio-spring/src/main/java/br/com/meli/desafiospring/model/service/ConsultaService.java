@@ -32,6 +32,7 @@ public class ConsultaService {
     private final MedicoService medicoService = new MedicoService();
     private final PacienteService pacienteService = new PacienteService();
     private final ProprietarioService proprietarioService = new ProprietarioService();
+    private final ArquivoUtil<Consulta> arquivoUtil = new ArquivoUtil<>();
 
     public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
         Medico medico = MedicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
@@ -46,7 +47,7 @@ public class ConsultaService {
         listaConsulta.add((Consulta) consulta);
 
         try {
-            ArquivoUtil.collectionToJson(file, listaConsulta);
+            arquivoUtil.collectionToJson(file, listaConsulta);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,7 +77,7 @@ public class ConsultaService {
         consulta.comMotivo(consultaRequestDTO.getMotivo()).comDiagnostico(consultaRequestDTO.getDiagnostico())
                 .comTratamento(consultaRequestDTO.getTratamento());
         try {
-            ArquivoUtil.collectionToJson(file, listaConsulta);
+            arquivoUtil.collectionToJson(file, listaConsulta);
         } catch (IOException e) {
             e.printStackTrace();
         }

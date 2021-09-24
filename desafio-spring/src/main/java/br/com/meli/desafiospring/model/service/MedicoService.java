@@ -22,6 +22,7 @@ public class MedicoService {
     @Getter
     private static final List<Medico> listaMedico = new ArrayList<>();
     private final File file = new File("medicos.json");
+    private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
 
 
     public MedicoDTO cadastrar(MedicoDTO medicoDTO){
@@ -29,7 +30,7 @@ public class MedicoService {
             medico.setId(listaMedico.size() + 1);
             listaMedico.add(medico);
             try {
-                ArquivoUtil.collectionToJsonMedico(file, listaMedico);
+                arquivoUtil.collectionToJson(file, listaMedico);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -73,7 +74,7 @@ public class MedicoService {
                 medico.setRegistro(medicoDTO.getRegistro());
                 medico.setEspecialidade(medicoDTO.getEspecialidade());
         try {
-            ArquivoUtil.collectionToJsonMedico(file, listaMedico);
+            arquivoUtil.collectionToJson(file, listaMedico);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,9 +89,17 @@ public class MedicoService {
                     throw new ValidaEntradaException("Medico tem uma consulta!!! Nao e possivel excluir");
                 }else {
                     listaMedico.remove(listaMedico.get(i));
+
                 }
             }
         }
+
+        try {
+            arquivoUtil.collectionToJson(file, listaMedico);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return medicoDTO;
     }
 

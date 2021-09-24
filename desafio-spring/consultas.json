@@ -6,7 +6,7 @@
   "tratamento" : "teste",
   "medico" : {
     "id" : 1,
-    "cpf" : "43255537845",
+    "cpf" : "43255517821",
     "nome" : "Lele",
     "sobrenome" : "Santos",
     "registro" : "CRM3",
@@ -22,7 +22,7 @@
     "proprietario" : {
       "id" : 1,
       "cpf" : "11122233344",
-      "nome" : "Ed1",
+      "nome" : "Ed3",
       "sobreNome" : "Nobre",
       "dataNascimento" : "1981-02-06",
       "endereco" : "Rua x10",
