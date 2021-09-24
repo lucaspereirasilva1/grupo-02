@@ -44,11 +44,11 @@ public class PacienteService {
         return moddelMapper.map(pacienteDTO, Paciente.class);
     }
 
-    private PacienteRequestDTO convertePacienteDTO(Paciente paciente) {
+    public PacienteRequestDTO convertePacienteDTO(Paciente paciente) {
         return moddelMapper.map(paciente, PacienteRequestDTO.class);
     }
 
-    private PacienteResponseDTO convertePacienteResponseDTO(Paciente paciente) {
+    public PacienteResponseDTO convertePacienteResponseDTO(Paciente paciente) {
         return moddelMapper.map(paciente, PacienteResponseDTO.class);
     }
 
