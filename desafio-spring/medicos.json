@@ -1,29 +1,8 @@
 [ {
   "id" : 1,
-  "cpf" : "132.666.378-99",
-  "nome" : "Luiza",
-  "sobrenome" : "Sonza",
-  "registro" : "CRM54322",
-  "especialidade" : "ortopedista"
-}, {
-  "id" : 2,
-  "cpf" : "132.666.378-99",
-  "nome" : "Luiza",
-  "sobrenome" : "Sonza",
-  "registro" : "CRM54322",
-  "especialidade" : "ortopedista"
-}, {
-  "id" : 3,
-  "cpf" : "132.666.378-99",
-  "nome" : "Luiza",
-  "sobrenome" : "",
-  "registro" : "CRM54322",
-  "especialidade" : "ortopedista"
-}, {
-  "id" : 4,
-  "cpf" : "132.666.378-99",
-  "nome" : "Luiza",
-  "sobrenome" : "Sonza",
-  "registro" : "CRM54322",
-  "especialidade" : "ortopedista"
+  "cpf" : "432555845",
+  "nome" : "Lili",
+  "sobrenome" : "Santos",
+  "registro" : "CRM3",
+  "especialidade" : "clinico geral"
 } ]
