@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/paciente")
@@ -41,5 +42,10 @@ public class PacienteController {
         HashMap<String, PacienteResponseDTO> retorno = new HashMap<>();
         retorno.put("Paciente abaixo removido: ", pacienteResponseDTO);
         return retorno;
+    }
+
+    @GetMapping(value = "/lista")
+    public List<PacienteResponseDTO> listarPaciente() {
+        return pacienteService.listar();
     }
 }
