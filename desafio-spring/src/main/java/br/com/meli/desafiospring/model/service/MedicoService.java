@@ -2,6 +2,7 @@ package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
+import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
@@ -79,12 +80,18 @@ public class MedicoService {
         return converteMedicoDTO(medico);
     }
 
-    public boolean removerMedico(Integer id) {
-        for (Medico m : listaMedico) {
-            if (m.getId().equals(id))
-                return listaMedico.remove(m);
+    public MedicoDTO removerMedico(Integer id) {
+        MedicoDTO medicoDTO = new MedicoDTO();
+        for (int i = 0; i < listaMedico.size(); i++) {
+            if(listaMedico.get(i).getId().equals(id)) {
+                if(verificarConsulta(listaMedico.get(i))) {
+                    throw new ValidaEntradaException("Medico tem uma consulta!!! Nao e possivel excluir");
+                }else {
+                    listaMedico.remove(listaMedico.get(i));
+                }
+            }
         }
-        return false;
+        return medicoDTO;
     }
 
     public static Medico buscaMedico(String registro) {
@@ -92,5 +99,13 @@ public class MedicoService {
                 .filter(c -> c.getRegistro().equals(registro))
                 .findFirst();
         return optionalMedico.orElse(null);
+    }
+
+    public boolean verificarConsulta(Medico medico) {
+        for (Consulta c: ConsultaService.getListaConsulta()) {
+            if(c.getMedico().equals(medico))
+                return true;
+        }
+        return false;
     }
 }
