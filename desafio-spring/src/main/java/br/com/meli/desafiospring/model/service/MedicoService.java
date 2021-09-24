@@ -22,6 +22,7 @@ public class MedicoService {
     private static final List<Medico> listaMedico = new ArrayList<>();
     private final File file = new File("medicos.json");
 
+
     public MedicoDTO cadastrar(MedicoDTO medicoDTO){
         Medico medico = converteMedico(medicoDTO);
             medico.setId(listaMedico.size() + 1);
@@ -34,6 +35,7 @@ public class MedicoService {
         return medicoDTO;
     }
 
+    // validacao campos nulos e duplicidade
     public void validar(MedicoDTO medicoDTO){
         if (medicoDTO.getCpf()!= null && medicoDTO.getNome()!=null && medicoDTO.getSobrenome()!=null
             && medicoDTO.getRegistro()!=null && medicoDTO.getEspecialidade()!=null) {
