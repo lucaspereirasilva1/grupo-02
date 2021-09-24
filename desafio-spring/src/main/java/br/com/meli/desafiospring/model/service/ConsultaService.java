@@ -27,7 +27,7 @@ public class ConsultaService {
 
     private final ModelMapper modelMapper = new ModelMapper();
     @Getter
-    private final List<Consulta> listaConsulta = new ArrayList<>();
+    private static final List<Consulta> listaConsulta = new ArrayList<>();
     private final File file = new File("consultas.json");
     private final MedicoService medicoService = new MedicoService();
     private final PacienteService pacienteService = new PacienteService();
@@ -147,4 +147,5 @@ public class ConsultaService {
         if(ObjectUtils.isEmpty(consultaRequestDTO.getDataHora()))
             throw new ValidaEntradaException("Data e hora nao informandos!!! Por gentileza informar.");
     }
+
 }

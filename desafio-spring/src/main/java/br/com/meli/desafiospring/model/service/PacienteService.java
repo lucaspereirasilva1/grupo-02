@@ -4,6 +4,7 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
+import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
@@ -103,26 +104,38 @@ public class PacienteService {
             throw new ValidaEntradaException("Nome nao informado!!! Por gentileza informar.");
     }
 
-
     public PacienteResponseDTO remover(Integer id) {
         PacienteResponseDTO pacienteResponseDTO = new PacienteResponseDTO();
         for (int i = 0; i < listaPaciente.size(); i++) {
             if(listaPaciente.get(i).getId().equals(id)) {
-                pacienteResponseDTO = convertePacienteResponseDTO(listaPaciente.get(i));
-                pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(
-                        listaPaciente.get(i).getProprietario()));
-                listaPaciente.remove(listaPaciente.get(i));
+                if(verificarConsulta(listaPaciente.get(i))) {
+                    throw new ValidaEntradaException("Paciente tem uma consulta!!! Nao e possivel excluir");
+                }else {
+                    pacienteResponseDTO = convertePacienteResponseDTO(listaPaciente.get(i));
+                    pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(
+                            listaPaciente.get(i).getProprietario()));
+                    listaPaciente.remove(listaPaciente.get(i));
+                }
             }
-        }
 
-        try {
-            ArquivoUtil.collectionToJsonPaciente(file, listaPaciente);
-        } catch (IOException e){
-            e.printStackTrace();
+            try {
+                ArquivoUtil.collectionToJsonPaciente(file, listaPaciente);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
         }
 
         return pacienteResponseDTO;
     }
+
+    public boolean verificarConsulta(Paciente paciente) {
+        for (Consulta c: ConsultaService.getListaConsulta()) {
+            if(c.getPaciente().equals(paciente))
+                return true;
+        }
+        return false;
+    }
+
 }
 
 
