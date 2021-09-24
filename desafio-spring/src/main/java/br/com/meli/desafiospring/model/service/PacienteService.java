@@ -4,6 +4,7 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
+import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class PacienteService {
     private static final List<Paciente> listaPaciente = new ArrayList<>();
     private final File file = new File ("paciente.json");
     private final ProprietarioService proprietarioService = new ProprietarioService();
+    private final ArquivoUtil<Paciente> arquivoUtil = new ArquivoUtil<>();
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = convertePaciente(pacienteRequestDTO);
@@ -37,7 +39,7 @@ public class PacienteService {
         paciente.setId(listaPaciente.size() + 1);
         listaPaciente.add(paciente);
         try {
-            ArquivoUtil.collectionToJsonPaciente(file, listaPaciente);
+            arquivoUtil.collectionToJson(file, listaPaciente);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,7 +70,7 @@ public class PacienteService {
         paciente.setNome(pacienteDTO.getNome());
 
         try {
-            ArquivoUtil.collectionToJsonPaciente(file, listaPaciente);
+            arquivoUtil.collectionToJson(file, listaPaciente);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -122,7 +124,7 @@ public class PacienteService {
             }
 
             try {
-                ArquivoUtil.collectionToJsonPaciente(file, listaPaciente);
+                arquivoUtil.collectionToJson(file, listaPaciente);
             } catch (IOException e){
                 e.printStackTrace();
             }

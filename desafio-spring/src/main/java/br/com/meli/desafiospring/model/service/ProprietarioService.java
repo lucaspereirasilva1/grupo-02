@@ -22,6 +22,7 @@ public class ProprietarioService {
     @Getter
     private static final List<Proprietario> listaProprietario = new ArrayList<>();
     private final File file = new File("proprietarios.json");
+    private final ArquivoUtil<Proprietario> arquivoUtil = new ArquivoUtil<>();
 
     public ProprietarioDTO cadastrar(ProprietarioDTO proprietarioDTO){
         Proprietario proprietario = converteProprietario(proprietarioDTO);
@@ -40,7 +41,7 @@ public class ProprietarioService {
         listaProprietario.add(proprietario);
 
         try {
-            ArquivoUtil.collectionToJsonProprietario(file, listaProprietario);
+            arquivoUtil.collectionToJson(file, listaProprietario);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,7 +70,7 @@ public class ProprietarioService {
         proprietario.setEndereco(proprietario.getEndereco());
         proprietario.setTelefone(proprietario.getTelefone());
         try {
-            ArquivoUtil.collectionToJsonProprietario(file, listaProprietario);
+            arquivoUtil.collectionToJson(file, listaProprietario);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,7 +95,7 @@ public class ProprietarioService {
 
 
         try {
-            ArquivoUtil.collectionToJsonProprietario(file, listaProprietario);
+            arquivoUtil.collectionToJson(file, listaProprietario);
             return retorno;
         } catch (IOException e) {
             e.printStackTrace();
