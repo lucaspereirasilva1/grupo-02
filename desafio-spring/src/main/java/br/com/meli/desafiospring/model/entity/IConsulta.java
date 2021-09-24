@@ -10,5 +10,6 @@ public interface IConsulta {
     IConsulta comDiagnostico(String diagnostico);
     IConsulta comTratamento(String tratamento);
     IConsulta comMedico(Medico medico);
+    IConsulta comPaciente(Paciente paciente);
 
 }

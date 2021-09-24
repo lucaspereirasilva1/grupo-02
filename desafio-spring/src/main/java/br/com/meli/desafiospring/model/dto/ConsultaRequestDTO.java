@@ -20,5 +20,6 @@ public class ConsultaRequestDTO {
     private String diagnostico;
     private String tratamento;
     private String registroMedico;
+    private Integer idPaciente;
 
 }
