@@ -1,15 +1,7 @@
 [ {
   "id" : 1,
   "cpf" : "111.222.333-44",
-  "nome" : "Ed1",
-  "sobreNome" : "Nobre",
-  "dataNascimento" : "1981-02-06",
-  "endereco" : "Rua x10",
-  "telefone" : 51987987987
-}, {
-  "id" : 2,
-  "cpf" : "111.222.333-44",
-  "nome" : "Ed",
+  "nome" : "Ed4",
   "sobreNome" : "Nobre",
   "dataNascimento" : "1981-02-06",
   "endereco" : "Rua x10",
@@ -17,7 +9,7 @@
 }, {
   "id" : 3,
   "cpf" : "111.222.333-44",
-  "nome" : "Ed1",
+  "nome" : "Ed4",
   "sobreNome" : "Nobre",
   "dataNascimento" : "1981-02-06",
   "endereco" : "Rua x10",
