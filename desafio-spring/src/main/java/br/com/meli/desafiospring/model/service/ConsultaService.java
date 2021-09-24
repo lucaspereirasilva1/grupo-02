@@ -1,8 +1,8 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.ConsultaResponseDTO;
-import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.IConsulta;
 import br.com.meli.desafiospring.model.entity.Medico;
@@ -11,16 +11,13 @@ import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,14 +29,14 @@ public class ConsultaService {
     private final File file = new File("consultas.json");
     private final MedicoService medicoService = new MedicoService();
 
-    public ConsultaResponseDTO cadastrar(ConsultaRequestDTO consultaDTO) {
-        Medico medico = MedicoService.buscaMedico(consultaDTO.getRegistroMedico());
+    public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
+        Medico medico = MedicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
         IConsulta consulta = new Consulta().comId(listaConsulta.size() + 1)
-                .comMotivo(consultaDTO.getMotivo())
-                .comDiagnostico(consultaDTO.getDiagnostico())
-                .comTratamento(consultaDTO.getTratamento())
-                .comMedico(medico);
-        consulta.noPeriodo(LocalDateTime.now());
+                .comMotivo(consultaRequestDTO.getMotivo())
+                .comDiagnostico(consultaRequestDTO.getDiagnostico())
+                .comTratamento(consultaRequestDTO.getTratamento())
+                .comMedico(medico)
+                .noPeriodo(consultaRequestDTO.getDataHora());
         listaConsulta.add((Consulta) consulta);
         try {
             ArquivoUtil.collectionToJson(file, listaConsulta);
@@ -48,7 +45,7 @@ public class ConsultaService {
         }
         ConsultaResponseDTO consultaResponseDTO =  converteConsultaResponseDTO((Consulta) consulta);
         consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(medico));
-        return consultaResponseDTO;
+        return ((Consulta) consulta).getId();
     }
 
     private ConsultaRequestDTO converteConsultaDTO(Consulta consulta) {
@@ -129,5 +126,14 @@ public class ConsultaService {
         }
         listaConsultaResponseDTO.sort(Comparator.comparing(ConsultaResponseDTO::getDataHora));
         return listaConsultaResponseDTO;
+    }
+
+    public void validaEntrada(ConsultaRequestDTO consultaRequestDTO) {
+        if (ObjectUtils.isEmpty(consultaRequestDTO.getRegistroMedico()))
+            throw new ValidaEntradaException("Registro medico nao informando!!! Por gentileza informar.");
+        if (ObjectUtils.isEmpty(consultaRequestDTO.getMotivo()))
+            throw new ValidaEntradaException("Motivo nao informando!!! Por gentileza informar.");
+        if(ObjectUtils.isEmpty(consultaRequestDTO.getDataHora()))
+            throw new ValidaEntradaException("Data e hora nao informandos!!! Por gentileza informar.");
     }
 }

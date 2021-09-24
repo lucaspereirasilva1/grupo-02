@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,10 +20,11 @@ public class ConsultaController {
     private ConsultaService consultaService;
 
     @PostMapping(value = "/cadastro", produces = "application/json")
-    public ResponseEntity<ConsultaResponseDTO> cadastrarConsulta(@RequestBody ConsultaRequestDTO consultaRequestDTO, UriComponentsBuilder uriComponentsBuilder) {
-        ConsultaResponseDTO dto = consultaService.cadastrar(consultaRequestDTO);
-        URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(consultaService.getListaConsulta().size()).toUri();
-        return ResponseEntity.created(uri).body(dto);
+    public ResponseEntity<String> cadastrarConsulta(@RequestBody ConsultaRequestDTO consultaRequestDTO, UriComponentsBuilder uriComponentsBuilder) {
+        consultaService.validaEntrada(consultaRequestDTO);
+        Integer id = consultaService.cadastrar(consultaRequestDTO);
+        URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(uri).body("Consulta cadastrada com sucesso");
     }
 
     @PutMapping(value = "/manutencao/{id}", produces = "application/json")

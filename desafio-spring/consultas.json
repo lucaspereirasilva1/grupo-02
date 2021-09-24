@@ -1,62 +1,6 @@
 [ {
   "id" : 1,
-  "dataHora" : "2021-09-23T17:47:48.685371",
-  "motivo" : "teste",
-  "diagnostico" : "teste",
-  "tratamento" : "teste",
-  "medico" : {
-    "id" : 1,
-    "cpf" : "43255537845",
-    "nome" : "Lele",
-    "sobrenome" : "Santos",
-    "registro" : "CRM3",
-    "especialidade" : "clinico geral"
-  }
-}, {
-  "id" : 2,
-  "dataHora" : "2021-09-23T17:47:51.288116",
-  "motivo" : "teste",
-  "diagnostico" : "teste",
-  "tratamento" : "teste",
-  "medico" : {
-    "id" : 1,
-    "cpf" : "43255537845",
-    "nome" : "Lele",
-    "sobrenome" : "Santos",
-    "registro" : "CRM3",
-    "especialidade" : "clinico geral"
-  }
-}, {
-  "id" : 3,
-  "dataHora" : "2021-09-23T17:47:51.87779",
-  "motivo" : "teste",
-  "diagnostico" : "teste",
-  "tratamento" : "teste",
-  "medico" : {
-    "id" : 1,
-    "cpf" : "43255537845",
-    "nome" : "Lele",
-    "sobrenome" : "Santos",
-    "registro" : "CRM3",
-    "especialidade" : "clinico geral"
-  }
-}, {
-  "id" : 4,
-  "dataHora" : "2021-09-23T17:47:52.187069",
-  "motivo" : "teste",
-  "diagnostico" : "teste",
-  "tratamento" : "teste",
-  "medico" : {
-    "id" : 1,
-    "cpf" : "43255537845",
-    "nome" : "Lele",
-    "sobrenome" : "Santos",
-    "registro" : "CRM3",
-    "especialidade" : "clinico geral"
-  }
-}, {
-  "id" : 5,
-  "dataHora" : "2021-09-23T17:47:52.930664",
+  "dataHora" : "2014-05-20T14:02:00",
   "motivo" : "teste",
   "diagnostico" : "teste",
   "tratamento" : "teste",
