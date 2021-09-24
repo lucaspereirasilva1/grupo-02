@@ -3,26 +3,29 @@ package br.com.meli.desafiospring.model.service;
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
-import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 
 public class PacienteService {
 
-    private final ModelMapper moddelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
     @Getter
     private static final List<Paciente> listaPaciente = new ArrayList<>();
     private final File file = new File ("paciente.json");
@@ -42,15 +45,15 @@ public class PacienteService {
     }
 
     public Paciente convertePaciente(PacienteRequestDTO pacienteDTO){
-        return moddelMapper.map(pacienteDTO, Paciente.class);
+        return modelMapper.map(pacienteDTO, Paciente.class);
     }
 
     public PacienteRequestDTO convertePacienteDTO(Paciente paciente) {
-        return moddelMapper.map(paciente, PacienteRequestDTO.class);
+        return modelMapper.map(paciente, PacienteRequestDTO.class);
     }
 
     public PacienteResponseDTO convertePacienteResponseDTO(Paciente paciente) {
-        return moddelMapper.map(paciente, PacienteResponseDTO.class);
+        return modelMapper.map(paciente, PacienteResponseDTO.class);
     }
 
     public PacienteRequestDTO editar(PacienteRequestDTO pacienteDTO, Integer id){
@@ -136,6 +139,24 @@ public class PacienteService {
         return false;
     }
 
+    public List<PacienteResponseDTO> listar() {
+        List<PacienteResponseDTO> listaPacienteResponseDTO = new ArrayList<>();
+        for (Paciente p: listaPaciente) {
+            PacienteResponseDTO pacienteResponseDTO = convertePacienteResponseDTO(p);
+            pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(p.getProprietario()));
+            listaPacienteResponseDTO.add(pacienteResponseDTO);
+        }
+
+        listaPacienteResponseDTO.sort(Comparator.comparing(c -> c.getProprietarioDTO().getNome()));
+
+        return listaPacienteResponseDTO;
+
+    }
+
+    public List<PacienteResponseDTO> listaConvertResponseDTO(List<Paciente> listaPaciente) {
+        Type listType = new TypeToken<List<PacienteResponseDTO>>() {}.getType();
+        return modelMapper.map(listaPaciente, listType);
+    }
 }
 
 
