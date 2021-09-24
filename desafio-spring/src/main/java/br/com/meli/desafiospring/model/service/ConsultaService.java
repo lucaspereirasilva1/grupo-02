@@ -140,6 +140,13 @@ public class ConsultaService {
     }
 
     public void validaEntrada(ConsultaRequestDTO consultaRequestDTO) {
+        if(ObjectUtils.isEmpty(consultaRequestDTO.getIdPaciente())
+                && ObjectUtils.isEmpty(consultaRequestDTO.getRegistroMedico())
+                && ObjectUtils.isEmpty(consultaRequestDTO.getMotivo())
+                && ObjectUtils.isEmpty(consultaRequestDTO.getDataHora()))
+            throw new ValidaEntradaException("Campos obrigatorios nao informados: Id do paciente, registro medico, motivo, data e hora");
+        if(ObjectUtils.isEmpty(consultaRequestDTO.getIdPaciente()))
+            throw new ValidaEntradaException("Id paciente nao informando!!! Por gentileza informar.");
         if (ObjectUtils.isEmpty(consultaRequestDTO.getRegistroMedico()))
             throw new ValidaEntradaException("Registro medico nao informando!!! Por gentileza informar.");
         if (ObjectUtils.isEmpty(consultaRequestDTO.getMotivo()))
