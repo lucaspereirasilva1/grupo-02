@@ -20,7 +20,7 @@ public class ProprietarioService {
 
     private final ModelMapper modelMapper = new ModelMapper();
     @Getter
-    private final List<Proprietario> listaProprietario = new ArrayList<>();
+    private static final List<Proprietario> listaProprietario = new ArrayList<>();
     private final File file = new File("proprietarios.json");
 
     public ProprietarioDTO cadastrar(ProprietarioDTO proprietarioDTO){
@@ -103,5 +103,11 @@ public class ProprietarioService {
 
     }
 
+    public static Proprietario buscarProprietario(Integer id) {
+        Optional<Proprietario> optionalProprietario = listaProprietario.stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst();
+        return optionalProprietario.orElse(null);
+    }
 
 }

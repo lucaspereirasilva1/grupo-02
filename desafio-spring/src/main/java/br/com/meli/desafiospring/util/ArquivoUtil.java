@@ -2,6 +2,7 @@ package br.com.meli.desafiospring.util;
 
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
+import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.model.entity.Proprietario;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,13 @@ public class ArquivoUtil {
     }
 
     public static void collectionToJsonProprietario(File file, List<Proprietario> users) throws IOException {
+        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.findAndRegisterModules();
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.writeValue(file, users);
+    }
+
+    public static void collectionToJsonPaciente(File file, List<Paciente> users) throws IOException {
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         mapper.findAndRegisterModules();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
