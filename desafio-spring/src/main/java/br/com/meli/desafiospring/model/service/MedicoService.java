@@ -70,6 +70,7 @@ public class MedicoService {
                 return listaMedico.remove(m);
         }
         return false;
+    }
 
     public static Medico buscaMedico(String registro) {
         Optional<Medico> optionalMedico = listaMedico.stream()
