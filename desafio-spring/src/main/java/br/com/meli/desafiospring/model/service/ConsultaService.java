@@ -3,12 +3,14 @@ package br.com.meli.desafiospring.model.service;
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.ConsultaResponseDTO;
+import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.IConsulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
+import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class ConsultaService {
 
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final ConvesorUtil convesorUtil = new ConvesorUtil();
     @Getter
     private static final List<Consulta> listaConsulta = new ArrayList<>();
     private final File file = new File("consultas.json");
@@ -52,20 +54,12 @@ public class ConsultaService {
             e.printStackTrace();
         }
 
-        ConsultaResponseDTO consultaResponseDTO =  converteConsultaResponseDTO((Consulta) consulta);
-        consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(medico));
-        PacienteResponseDTO pacienteResponseDTO = pacienteService.convertePacienteResponseDTO(paciente);
+        ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, new ConsultaResponseDTO());
+        consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(medico, new MedicoDTO()));
+        PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, new PacienteResponseDTO());
         pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(paciente.getProprietario()));
         consultaResponseDTO.setPacienteResponseDTO(pacienteResponseDTO);
         return ((Consulta) consulta).getId();
-    }
-
-    private ConsultaRequestDTO converteConsultaDTO(Consulta consulta) {
-        return modelMapper.map(consulta, ConsultaRequestDTO.class);
-    }
-
-    private ConsultaResponseDTO converteConsultaResponseDTO(Consulta consulta) {
-        return modelMapper.map(consulta, ConsultaResponseDTO.class);
     }
 
     public ConsultaResponseDTO editar(ConsultaRequestDTO consultaRequestDTO, Integer id) {
@@ -81,27 +75,22 @@ public class ConsultaService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ConsultaResponseDTO consultaResponseDTO = converteConsultaResponseDTO(consulta);
-        consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(consulta.getMedico()));
+        ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, new ConsultaResponseDTO());
+        consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), new MedicoDTO()));
         return consultaResponseDTO;
     }
 
     public List<ConsultaResponseDTO> listar() {
         List<ConsultaResponseDTO> listaConsultaResponseDTO = new ArrayList<>();
         for (Consulta c : listaConsulta) {
-            ConsultaResponseDTO consultaResponseDTO = converteConsultaResponseDTO(c);
-            consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(c.getMedico()));
+            ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(c, new ConsultaResponseDTO());
+            consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(c.getMedico(), new MedicoDTO()));
             listaConsultaResponseDTO.add(consultaResponseDTO);
         }
 
         return listaConsultaResponseDTO.stream()
                 .sorted((c1, c2) -> c2.getDataHora().compareTo(c1.getDataHora()))
                 .collect(Collectors.toList());
-    }
-
-    public List<ConsultaResponseDTO> listaConvertResponseDTO(List<Consulta> listaConsulta) {
-        Type listType = new TypeToken<List<ConsultaResponseDTO>>() {}.getType();
-        return modelMapper.map(listaConsulta, listType);
     }
 
     public List<String> listarTotalMedicos() {
@@ -132,8 +121,8 @@ public class ConsultaService {
                 .filter(c -> c.getDataHora().getYear() == dataConsulta.getYear())
                 .collect(Collectors.toList());
         for (Consulta c : retornoListaConsultas) {
-            ConsultaResponseDTO consultaResponseDTO = converteConsultaResponseDTO(c);
-            consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(c.getMedico()));
+            ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(c, new ConsultaResponseDTO());
+            consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(c.getMedico(), new MedicoDTO()));
             listaConsultaResponseDTO.add(consultaResponseDTO);
         }
         listaConsultaResponseDTO.sort(Comparator.comparing(ConsultaResponseDTO::getDataHora));

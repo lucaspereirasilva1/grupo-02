@@ -5,6 +5,7 @@ import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
+import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,22 +19,22 @@ import java.util.Optional;
 @Service
 public class MedicoService {
 
-    private final ModelMapper modelMapper = new ModelMapper();
     @Getter
     private static final List<Medico> listaMedico = new ArrayList<>();
     private final File file = new File("medicos.json");
+    private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
 
-
     public MedicoDTO cadastrar(MedicoDTO medicoDTO){
-        Medico medico = converteMedico(medicoDTO);
-            medico.setId(listaMedico.size() + 1);
-            listaMedico.add(medico);
-            try {
-                arquivoUtil.collectionToJson(file, listaMedico);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        Medico medico = new Medico();
+        medico = (Medico) convesorUtil.conveterDTO(medicoDTO, medico);
+        medico.setId(listaMedico.size() + 1);
+        listaMedico.add(medico);
+        try {
+            arquivoUtil.collectionToJson(file, listaMedico);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return medicoDTO;
     }
 
@@ -53,15 +54,6 @@ public class MedicoService {
         }
     }
 
-
-    public Medico converteMedico(MedicoDTO medicoDTO) {
-        return modelMapper.map(medicoDTO, Medico.class);
-    }
-
-    public MedicoDTO converteMedicoDTO(Medico medico) {
-        return modelMapper.map(medico, MedicoDTO.class);
-    }
-
     public MedicoDTO editar(MedicoDTO medicoDTO, Integer id) {
         Optional<Medico> optionalMedico = listaMedico.stream()
                 .filter(c -> c.getId().equals(id))
@@ -78,7 +70,7 @@ public class MedicoService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return converteMedicoDTO(medico);
+        return (MedicoDTO) convesorUtil.conveterDTO(medico, new MedicoDTO());
     }
 
     public MedicoDTO removerMedico(Integer id) {

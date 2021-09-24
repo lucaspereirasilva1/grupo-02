@@ -5,4 +5,18 @@
   "sobrenome" : "Santos",
   "registro" : "CRM3",
   "especialidade" : "clinico geral"
+}, {
+  "id" : 2,
+  "cpf" : "43255517820",
+  "nome" : "Lele",
+  "sobrenome" : "Santos",
+  "registro" : "CRM3",
+  "especialidade" : "clinico geral"
+}, {
+  "id" : 3,
+  "cpf" : "43255517828",
+  "nome" : "Lele",
+  "sobrenome" : "Santos",
+  "registro" : "CRM3",
+  "especialidade" : "clinico geral"
 } ]

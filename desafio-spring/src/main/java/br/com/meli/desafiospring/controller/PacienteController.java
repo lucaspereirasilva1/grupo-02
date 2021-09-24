@@ -29,8 +29,8 @@ public class PacienteController {
     }
 
     @PutMapping(value = "/editar/{id}", produces = "application/json")
-    public ResponseEntity<PacienteRequestDTO> editarPaciente(@RequestBody PacienteRequestDTO paciente, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
-        PacienteRequestDTO dto = pacienteService.editar(paciente, id);
+    public ResponseEntity<PacienteResponseDTO> editarPaciente(@RequestBody PacienteRequestDTO paciente, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
+        PacienteResponseDTO dto = pacienteService.editar(paciente, id);
         URI uri = uriComponentsBuilder.path("/verpaciente/{codigo}").buildAndExpand(PacienteService.getListaPaciente().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
 

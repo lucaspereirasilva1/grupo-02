@@ -3,38 +3,37 @@ package br.com.meli.desafiospring.model.service;
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
+import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
-import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
+import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 
 public class PacienteService {
 
-    private final ModelMapper modelMapper = new ModelMapper();
     @Getter
     private static final List<Paciente> listaPaciente = new ArrayList<>();
     private final File file = new File ("paciente.json");
     private final ProprietarioService proprietarioService = new ProprietarioService();
+    private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Paciente> arquivoUtil = new ArquivoUtil<>();
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
-        Paciente paciente = convertePaciente(pacienteRequestDTO);
+        Paciente paciente = new Paciente();
+        paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, paciente);
         paciente.setProprietario(ProprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
         paciente.setId(listaPaciente.size() + 1);
         listaPaciente.add(paciente);
@@ -46,19 +45,7 @@ public class PacienteService {
         return paciente.getId();
     }
 
-    public Paciente convertePaciente(PacienteRequestDTO pacienteDTO){
-        return modelMapper.map(pacienteDTO, Paciente.class);
-    }
-
-    public PacienteRequestDTO convertePacienteDTO(Paciente paciente) {
-        return modelMapper.map(paciente, PacienteRequestDTO.class);
-    }
-
-    public PacienteResponseDTO convertePacienteResponseDTO(Paciente paciente) {
-        return modelMapper.map(paciente, PacienteResponseDTO.class);
-    }
-
-    public PacienteRequestDTO editar(PacienteRequestDTO pacienteDTO, Integer id){
+    public PacienteResponseDTO editar(PacienteRequestDTO pacienteDTO, Integer id){
         Optional<Paciente>optionalPaciente = listaPaciente.stream().filter(c -> c.getId().equals(id))
                 .findFirst();
         Paciente paciente = optionalPaciente.orElse(null);
@@ -75,7 +62,9 @@ public class PacienteService {
             e.printStackTrace();
         }
 
-        return convertePacienteDTO(paciente);
+        PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, new PacienteResponseDTO());
+        pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(paciente.getProprietario(), new ProprietarioDTO()));
+        return pacienteResponseDTO;
     }
 
     public static Paciente buscaPaciente(Integer id) {
@@ -116,7 +105,7 @@ public class PacienteService {
                 if(verificarConsulta(listaPaciente.get(i))) {
                     throw new ValidaEntradaException("Paciente tem uma consulta!!! Nao e possivel excluir");
                 }else {
-                    pacienteResponseDTO = convertePacienteResponseDTO(listaPaciente.get(i));
+                    pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(listaPaciente.get(i), new PacienteResponseDTO());
                     pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(
                             listaPaciente.get(i).getProprietario()));
                     listaPaciente.remove(listaPaciente.get(i));
@@ -144,7 +133,7 @@ public class PacienteService {
     public List<PacienteResponseDTO> listar() {
         List<PacienteResponseDTO> listaPacienteResponseDTO = new ArrayList<>();
         for (Paciente p: listaPaciente) {
-            PacienteResponseDTO pacienteResponseDTO = convertePacienteResponseDTO(p);
+            PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(p, new PacienteResponseDTO());
             pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(p.getProprietario()));
             listaPacienteResponseDTO.add(pacienteResponseDTO);
         }
@@ -155,10 +144,6 @@ public class PacienteService {
 
     }
 
-    public List<PacienteResponseDTO> listaConvertResponseDTO(List<Paciente> listaPaciente) {
-        Type listType = new TypeToken<List<PacienteResponseDTO>>() {}.getType();
-        return modelMapper.map(listaPaciente, listType);
-    }
 }
 
 
