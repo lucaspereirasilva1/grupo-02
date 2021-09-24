@@ -2,6 +2,8 @@ package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
+import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
+import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class PacienteService {
     @Getter
     private static final List<Paciente> listaPaciente = new ArrayList<>();
     private final File file = new File ("paciente.json");
+    private final ProprietarioService proprietarioService = new ProprietarioService();
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = convertePaciente(pacienteRequestDTO);
@@ -40,9 +43,15 @@ public class PacienteService {
     public Paciente convertePaciente(PacienteRequestDTO pacienteDTO){
         return moddelMapper.map(pacienteDTO, Paciente.class);
     }
-    private PacienteRequestDTO convertePacienteDTO(Paciente paciente) {
+
+    public PacienteRequestDTO convertePacienteDTO(Paciente paciente) {
         return moddelMapper.map(paciente, PacienteRequestDTO.class);
     }
+
+    public PacienteResponseDTO convertePacienteResponseDTO(Paciente paciente) {
+        return moddelMapper.map(paciente, PacienteResponseDTO.class);
+    }
+
     public PacienteRequestDTO editar(PacienteRequestDTO pacienteDTO, Integer id){
         Optional<Paciente>optionalPaciente = listaPaciente.stream().filter(c -> c.getId().equals(id))
                 .findFirst();
@@ -92,6 +101,27 @@ public class PacienteService {
             throw new ValidaEntradaException("Data de nascimento nao informada!!! Por gentileza informar.");
         if(ObjectUtils.isEmpty(pacienteDTO.getNome()))
             throw new ValidaEntradaException("Nome nao informado!!! Por gentileza informar.");
+    }
+
+
+    public PacienteResponseDTO remover(Integer id) {
+        PacienteResponseDTO pacienteResponseDTO = new PacienteResponseDTO();
+        for (int i = 0; i < listaPaciente.size(); i++) {
+            if(listaPaciente.get(i).getId().equals(id)) {
+                pacienteResponseDTO = convertePacienteResponseDTO(listaPaciente.get(i));
+                pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(
+                        listaPaciente.get(i).getProprietario()));
+                listaPaciente.remove(listaPaciente.get(i));
+            }
+        }
+
+        try {
+            ArquivoUtil.collectionToJsonPaciente(file, listaPaciente);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return pacienteResponseDTO;
     }
 }
 

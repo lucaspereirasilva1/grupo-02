@@ -14,4 +14,5 @@ public class ConsultaResponseDTO {
     private String diagnostico;
     private String tratamento;
     private MedicoDTO medicoDTO;
+    private PacienteResponseDTO pacienteResponseDTO;
 }

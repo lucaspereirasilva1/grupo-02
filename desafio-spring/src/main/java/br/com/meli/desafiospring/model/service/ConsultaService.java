@@ -3,9 +3,11 @@ package br.com.meli.desafiospring.model.service;
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.ConsultaResponseDTO;
+import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.IConsulta;
 import br.com.meli.desafiospring.model.entity.Medico;
+import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
@@ -28,23 +30,32 @@ public class ConsultaService {
     private final List<Consulta> listaConsulta = new ArrayList<>();
     private final File file = new File("consultas.json");
     private final MedicoService medicoService = new MedicoService();
+    private final PacienteService pacienteService = new PacienteService();
+    private final ProprietarioService proprietarioService = new ProprietarioService();
 
     public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
         Medico medico = MedicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
+        Paciente paciente = PacienteService.buscaPaciente(consultaRequestDTO.getIdPaciente());
         IConsulta consulta = new Consulta().comId(listaConsulta.size() + 1)
                 .comMotivo(consultaRequestDTO.getMotivo())
                 .comDiagnostico(consultaRequestDTO.getDiagnostico())
                 .comTratamento(consultaRequestDTO.getTratamento())
                 .comMedico(medico)
-                .noPeriodo(consultaRequestDTO.getDataHora());
+                .noPeriodo(consultaRequestDTO.getDataHora())
+                .comPaciente(paciente);
         listaConsulta.add((Consulta) consulta);
+
         try {
             ArquivoUtil.collectionToJson(file, listaConsulta);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         ConsultaResponseDTO consultaResponseDTO =  converteConsultaResponseDTO((Consulta) consulta);
         consultaResponseDTO.setMedicoDTO(medicoService.converteMedicoDTO(medico));
+        PacienteResponseDTO pacienteResponseDTO = pacienteService.convertePacienteResponseDTO(paciente);
+        pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(paciente.getProprietario()));
+        consultaResponseDTO.setPacienteResponseDTO(pacienteResponseDTO);
         return ((Consulta) consulta).getId();
     }
 
