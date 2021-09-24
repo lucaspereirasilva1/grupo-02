@@ -1,5 +1,6 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
@@ -33,14 +34,19 @@ public class MedicoService {
         return medicoDTO;
     }
 
-    public boolean validar(MedicoDTO medicoDTO){
+    public void validar(MedicoDTO medicoDTO){
         if (medicoDTO.getCpf()!= null && medicoDTO.getNome()!=null && medicoDTO.getSobrenome()!=null
             && medicoDTO.getRegistro()!=null && medicoDTO.getEspecialidade()!=null) {
-            return true;
+
         } else {
-            return false;
+            throw new ValidaEntradaException("Por favor preencher todos os campos");
         }
 
+        for (int i = 0; i < listaMedico.size(); i++) {
+            if (listaMedico.get(i).getCpf().equals(medicoDTO.getCpf())) {
+                throw new ValidaEntradaException("Medico ja existente!");
+            }
+        }
     }
 
 

@@ -17,14 +17,11 @@ public class MedicoController {
     MedicoService medicoService;
     @PostMapping("/cadastro")
     public ResponseEntity<String> cadastrarMedico(@RequestBody MedicoDTO medicoDTO, UriComponentsBuilder uriComponentsBuilder){
-        if(medicoService.validar(medicoDTO)==true) {
-            MedicoDTO dto = medicoService.cadastrar(medicoDTO);
-            URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(medicoService.getListaMedico().size()).toUri();
-            return ResponseEntity.created(uri).body("Medico cadastrado");
-        } else {
-            return ResponseEntity.badRequest().body("Favor preencher todos os campos");
+        medicoService.validar(medicoDTO);
+        MedicoDTO dto = medicoService.cadastrar(medicoDTO);
+        URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(medicoService.getListaMedico().size()).toUri();
+        return ResponseEntity.created(uri).body("Medico cadastrado");
         }
-    }
 
     @PutMapping(value = "/editar/{id}", produces = "application/json")
     public ResponseEntity<MedicoDTO> editarMedico(@RequestBody MedicoDTO medicoDTO, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
