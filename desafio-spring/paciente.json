@@ -14,20 +14,4 @@
     "endereco" : "Rua x10",
     "telefone" : 51987987987
   }
-}, {
-  "id" : 2,
-  "especie" : "cao",
-  "raca" : "poodle",
-  "cor" : "preto",
-  "dataDeNascimento" : "2021-02-21",
-  "nome" : "joao",
-  "proprietario" : {
-    "id" : 2,
-    "cpf" : "11122233344",
-    "nome" : "Ed1",
-    "sobreNome" : "Nobre",
-    "dataNascimento" : "1981-02-06",
-    "endereco" : "Rua x10",
-    "telefone" : 51987987987
-  }
 } ]
