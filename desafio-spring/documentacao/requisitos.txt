@@ -12,6 +12,14 @@ cadastrar/editar pacientes - endpoint
 todos os campos obrigatórios
 proprietario com consultar nao podem ser excluidos
 
+
+
+
+
+
+
+
+
 listarPacientes - endpoint
 ordem crescente do nome do proprietario
 
