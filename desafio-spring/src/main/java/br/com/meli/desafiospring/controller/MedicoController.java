@@ -31,7 +31,8 @@ public class MedicoController {
     }
 
     @DeleteMapping(value="/deleta/{id}")
-    public String removerMedico(@PathVariable("id") Integer id){
-        return medicoService.removerMedico(id) ? "Medico removido" : "Medico nao removido";
+    public ResponseEntity<String> removerMedico(@PathVariable("id") Integer id){
+        medicoService.removerMedico(id);
+            return ResponseEntity.ok("Medico removido");
     }
 }
