@@ -30,9 +30,10 @@ public class ProprietarioController {
         return ResponseEntity.created(uri).body(dto);
     }
 
-    @DeleteMapping(value = "/excluir/{id}", produces = "application/json")
-    public String excluirProprietario(@PathVariable("id") Integer id) {
-        return proprietarioService.excluir(id);
+    @DeleteMapping(value = "/excluir/{id}")
+    public ResponseEntity<String> excluirProprietario(@PathVariable("id") Integer id){
+        proprietarioService.excluir(id);
+        return ResponseEntity.ok("Proprietario removido");
     }
 
 
