@@ -1,13 +1,13 @@
 package br.com.meli.desafiospring.model.service;
 
-import br.com.meli.desafiospring.model.dto.MedicoDTO;
+import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
-import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class ProprietarioService {
     private final File file = new File("proprietarios.json");
     private final ArquivoUtil<Proprietario> arquivoUtil = new ArquivoUtil<>();
 
-    public ProprietarioDTO cadastrar(ProprietarioDTO proprietarioDTO){
+    public Integer cadastrar(ProprietarioDTO proprietarioDTO){
         Proprietario proprietario = converteProprietario(proprietarioDTO);
 
         int tamanho;
@@ -34,9 +34,9 @@ public class ProprietarioService {
             tamanho=listaProprietario.size()+1;
 
         for(Proprietario p:listaProprietario) {
-            System.out.print(p.getId()+", ");
             tamanho=(p.getId());
         }
+
         proprietario.setId(tamanho + 1);
         listaProprietario.add(proprietario);
 
@@ -45,7 +45,29 @@ public class ProprietarioService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return proprietarioDTO;
+        return ((Proprietario) proprietario).getId();
+    }
+
+    public void validaEntradaProprietario(ProprietarioDTO proprietarioDTO) {
+        if (ObjectUtils.isEmpty(proprietarioDTO.getCpf()))
+            throw new ValidaEntradaException("CPF nao informando!!! Por gentileza informar.");
+        else{
+            for(int i=0; i < listaProprietario.size(); i++) {
+                if (listaProprietario.get(i).getCpf().equals(proprietarioDTO.getCpf())) {
+                    throw new ValidaEntradaException("Proprietario ja existente!");
+                }
+            }
+        }
+        if (ObjectUtils.isEmpty(proprietarioDTO.getNome()))
+            throw new ValidaEntradaException("Nome nao informando!!! Por gentileza informar.");
+        if(ObjectUtils.isEmpty(proprietarioDTO.getSobreNome()))
+            throw new ValidaEntradaException("Sobre nome nao informandos!!! Por gentileza informar.");
+        if(ObjectUtils.isEmpty(proprietarioDTO.getDataNascimento()))
+            throw new ValidaEntradaException("Data de nascimento nao informandos!!! Por gentileza informar.");
+        if(ObjectUtils.isEmpty(proprietarioDTO.getEndereco()))
+            throw new ValidaEntradaException("Endereco nao informandos!!! Por gentileza informar.");
+        if(ObjectUtils.isEmpty(proprietarioDTO.getTelefone()))
+            throw new ValidaEntradaException("Telefone nao informandos!!! Por gentileza informar.");
     }
 
     public Proprietario converteProprietario(ProprietarioDTO proprietarioDTO) {
@@ -57,7 +79,6 @@ public class ProprietarioService {
     }
 
     public ProprietarioDTO editar(ProprietarioDTO proprietarioDTO, Integer id) {
-      //  String retorno="Não existe";
         Optional<Proprietario> optionalProprietario = listaProprietario.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst();
@@ -110,5 +131,6 @@ public class ProprietarioService {
                 .findFirst();
         return optionalProprietario.orElse(null);
     }
+
 
 }
