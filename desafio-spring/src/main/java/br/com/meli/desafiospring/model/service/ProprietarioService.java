@@ -1,7 +1,10 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
+import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
+import br.com.meli.desafiospring.model.entity.Consulta;
+import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import lombok.Getter;
@@ -99,30 +102,26 @@ public class ProprietarioService {
     }
 
 
-    public String excluir(Integer id) {
-        String retorno="Não existe";
-        for(Proprietario p:listaProprietario){
-            if(p.getId().equals(id)){
-                retorno = p.getNome()+" "+p.getSobreNome()+" excluido";
-                listaProprietario.remove(p);
+    public ProprietarioDTO excluir(Integer id) {
+        ProprietarioDTO propritarioDTO = new ProprietarioDTO();
+        for (int i = 0; i < listaProprietario.size(); i++) {
+            if(listaProprietario.get(i).getId().equals(id)) {
+                if(verificarConsulta(listaProprietario.get(i))) {
+                    throw new ValidaEntradaException("Proprietario tem uma consulta!!! Nao e possivel excluir");
+                }else {
+                    listaProprietario.remove(listaProprietario.get(i));
+
+                }
             }
         }
 
-        Optional<Proprietario> optionalProprietario = listaProprietario.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
-        Proprietario proprietario = optionalProprietario.orElse(null);
-        assert proprietario != null;
-
-
         try {
             arquivoUtil.collectionToJson(file, listaProprietario);
-            return retorno;
         } catch (IOException e) {
             e.printStackTrace();
-            return "";
         }
 
+        return propritarioDTO;
     }
 
     public static Proprietario buscarProprietario(Integer id) {
@@ -132,5 +131,12 @@ public class ProprietarioService {
         return optionalProprietario.orElse(null);
     }
 
+    public boolean verificarConsulta(Proprietario proprietario) {
+        for (Consulta c: ConsultaService.getListaConsulta()) {
+            if(c.getPaciente().getProprietario().equals(proprietario))
+                return true;
+        }
+        return false;
+    }
 
 }
