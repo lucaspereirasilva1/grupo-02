@@ -18,21 +18,21 @@ public class MedicoController {
     @PostMapping("/cadastro")
     public ResponseEntity<String> cadastrarMedico(@RequestBody MedicoDTO medicoDTO, UriComponentsBuilder uriComponentsBuilder){
         medicoService.validar(medicoDTO);
-        MedicoDTO dto = medicoService.cadastrar(medicoDTO);
-        URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(medicoService.getListaMedico().size()).toUri();
+        Integer id = medicoService.cadastrar(medicoDTO);
+        URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(id).toUri();
         return ResponseEntity.created(uri).body("Medico cadastrado");
         }
 
     @PutMapping(value = "/editar/{id}", produces = "application/json")
     public ResponseEntity<MedicoDTO> editarMedico(@RequestBody MedicoDTO medicoDTO, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
         MedicoDTO dto = medicoService.editar(medicoDTO, id);
-        URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(medicoService.getListaMedico().size()).toUri();
+        URI uri = uriComponentsBuilder.path("/vermedico/{codigo}").buildAndExpand(MedicoService.getListaMedico().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @DeleteMapping(value="/deleta/{id}")
     public ResponseEntity<String> removerMedico(@PathVariable("id") Integer id){
         medicoService.removerMedico(id);
-            return ResponseEntity.ok("Medico removido");
+        return ResponseEntity.ok("Medico removido");
     }
 }
