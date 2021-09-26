@@ -1,8 +1,6 @@
 package br.com.meli.desafiospring.controller;
 
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
-import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
-import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.model.service.ProprietarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +16,11 @@ public class ProprietarioController {
     @Autowired
     ProprietarioService proprietarioService;
     @PostMapping(value = "/cadastro", produces = "application/json")
-    public ResponseEntity<ProprietarioDTO> cadastrarProprietario(@RequestBody ProprietarioDTO proprietarioDTO, UriComponentsBuilder uriComponentsBuilder){
-        ProprietarioDTO dto = proprietarioService.cadastrar(proprietarioDTO);
-        URI uri = uriComponentsBuilder.path("/verproprietario/{codigo}").buildAndExpand(proprietarioService.getListaProprietario().size()).toUri();
-        return ResponseEntity.created(uri).body(dto);
-
+    public ResponseEntity<String> cadastrarProprietario(@RequestBody ProprietarioDTO proprietarioDTO, UriComponentsBuilder uriComponentsBuilder){
+        proprietarioService.validaEntradaProprietario(proprietarioDTO);
+        Integer id = proprietarioService.cadastrar(proprietarioDTO);
+        URI uri = uriComponentsBuilder.path("/verproprietario/{codigo}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(uri).body("Proprietario cadastrado");
     }
 
     @PutMapping(value = "/editar/{id}", produces = "application/json")
@@ -31,14 +29,12 @@ public class ProprietarioController {
         URI uri = uriComponentsBuilder.path("/verproprietario/{codigo}").buildAndExpand(proprietarioService.getListaProprietario().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
-    int i=0;
 
-    @DeleteMapping(value = "/excluir/{id}", produces = "application/json")
-    public String excluirProprietario(@RequestBody ProprietarioDTO proprietarioDTO, @PathVariable("id") Integer id, UriComponentsBuilder uriComponentsBuilder) {
-        String dto = proprietarioService.excluir(id);
-        return dto;
+    @DeleteMapping(value = "/excluir/{id}")
+    public ResponseEntity<String> excluirProprietario(@PathVariable("id") Integer id){
+        proprietarioService.excluir(id);
+        return ResponseEntity.ok("Proprietario removido");
     }
 
-    int j=1;
 
 }
