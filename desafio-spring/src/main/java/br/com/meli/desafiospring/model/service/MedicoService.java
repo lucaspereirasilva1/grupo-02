@@ -7,7 +7,6 @@ import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,7 +24,7 @@ public class MedicoService {
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
 
-    public MedicoDTO cadastrar(MedicoDTO medicoDTO){
+    public Integer cadastrar(MedicoDTO medicoDTO){
         Medico medico = new Medico();
         medico = (Medico) convesorUtil.conveterDTO(medicoDTO, medico);
         medico.setId(listaMedico.size() + 1);
@@ -35,23 +34,24 @@ public class MedicoService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return medicoDTO;
+        return medico.getId();
     }
 
     // validacao campos nulos e duplicidade
     public void validar(MedicoDTO medicoDTO){
-        if (medicoDTO.getCpf()!= null && medicoDTO.getNome()!=null && medicoDTO.getSobrenome()!=null
-            && medicoDTO.getRegistro()!=null && medicoDTO.getEspecialidade()!=null) {
+        if (medicoDTO.getCpf() == null || medicoDTO.getNome() == null || medicoDTO.getSobrenome() == null
+                || medicoDTO.getRegistro() == null || medicoDTO.getEspecialidade() == null) {
+                    throw new ValidaEntradaException("Por favor preencher todos os campos");
+                }
 
-        } else {
-            throw new ValidaEntradaException("Por favor preencher todos os campos");
-        }
-
-        for (int i = 0; i < listaMedico.size(); i++) {
-            if (listaMedico.get(i).getCpf().equals(medicoDTO.getCpf())) {
-                throw new ValidaEntradaException("Medico ja existente!");
+        listaMedico.forEach(m -> {
+            if(m.getCpf().equals(medicoDTO.getCpf())) {
+                throw new ValidaEntradaException("Medico ja existente para esse CPF!");
             }
-        }
+            if(m.getRegistro().equals(medicoDTO.getRegistro())) {
+                throw new ValidaEntradaException("Medico ja existente para esse CRM!");
+            }
+        });
     }
 
     public MedicoDTO editar(MedicoDTO medicoDTO, Integer id) {
@@ -73,15 +73,13 @@ public class MedicoService {
         return (MedicoDTO) convesorUtil.conveterDTO(medico, new MedicoDTO());
     }
 
-    public MedicoDTO removerMedico(Integer id) {
-        MedicoDTO medicoDTO = new MedicoDTO();
+    public void removerMedico(Integer id) {
         for (int i = 0; i < listaMedico.size(); i++) {
             if(listaMedico.get(i).getId().equals(id)) {
                 if(verificarConsulta(listaMedico.get(i))) {
                     throw new ValidaEntradaException("Medico tem uma consulta!!! Nao e possivel excluir");
                 }else {
                     listaMedico.remove(listaMedico.get(i));
-
                 }
             }
         }
@@ -91,8 +89,6 @@ public class MedicoService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return medicoDTO;
     }
 
     public static Medico buscaMedico(String registro) {
