@@ -46,7 +46,10 @@ public class MedicoService {
 
         listaMedico.forEach(m -> {
             if(m.getCpf().equals(medicoDTO.getCpf())) {
-                throw new ValidaEntradaException("Medico ja existente!");
+                throw new ValidaEntradaException("Medico ja existente para esse CPF!");
+            }
+            if(m.getRegistro().equals(medicoDTO.getRegistro())) {
+                throw new ValidaEntradaException("Medico ja existente para esse CRM!");
             }
         });
     }

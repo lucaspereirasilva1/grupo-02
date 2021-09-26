@@ -1,8 +1,15 @@
 [ {
   "id" : 1,
-  "cpf" : "43255537846",
+  "cpf" : "43255537841",
   "nome" : "Lele",
   "sobrenome" : "Santos",
-  "registro" : "CRM3",
+  "registro" : "CRM1",
+  "especialidade" : "clinico geral"
+}, {
+  "id" : 2,
+  "cpf" : "43255537842",
+  "nome" : "Lele",
+  "sobrenome" : "Santos",
+  "registro" : "CRM2",
   "especialidade" : "clinico geral"
 } ]
