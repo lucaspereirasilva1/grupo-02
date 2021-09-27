@@ -1,13 +1,13 @@
 [ {
   "id" : 1,
-  "dataHora" : "1800-01-21T00:01:00",
+  "dataHora" : "2000-01-21T00:01:00",
   "motivo" : "teste",
   "diagnostico" : "teste",
   "tratamento" : "teste",
   "medico" : {
     "id" : 1,
-    "cpf" : "111.222.111-33",
-    "nome" : "Lele2",
+    "cpf" : "43255537842",
+    "nome" : "Lele",
     "sobrenome" : "Santos",
     "registro" : "CRM2",
     "especialidade" : "clinico geral"
@@ -16,14 +16,14 @@
     "id" : 1,
     "especie" : "cao",
     "raca" : "poodle",
-    "cor" : "preto55",
+    "cor" : "preto",
     "dataDeNascimento" : "2021-02-21",
-    "nome" : "preto",
+    "nome" : "joao",
     "proprietario" : {
-      "id" : 2,
-      "cpf" : "111.222.353-44",
-      "nome" : "Ed4",
-      "sobreNome" : "Nobre proprietario",
+      "id" : 1,
+      "cpf" : "11122233344",
+      "nome" : "Ed1",
+      "sobreNome" : "Nobre",
       "dataNascimento" : "1981-02-06",
       "endereco" : "Rua x10",
       "telefone" : 51987987987

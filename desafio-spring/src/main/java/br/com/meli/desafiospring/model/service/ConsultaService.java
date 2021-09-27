@@ -9,17 +9,16 @@ import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -66,8 +65,8 @@ public class ConsultaService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, new ConsultaResponseDTO());
-        consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), new MedicoDTO()));
+        ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, ConsultaResponseDTO.class);
+        consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), MedicoDTO.class));
         return consultaResponseDTO;
     }
 
@@ -127,10 +126,10 @@ public class ConsultaService {
     public List<ConsultaResponseDTO> converterListaConsultaResponseDTO(List<Consulta> listaConsulta) {
         List<ConsultaResponseDTO> listaConsultaResponseDTO = new ArrayList<>();
         listaConsulta.forEach(c -> {
-            ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(c, new ConsultaResponseDTO());
-            consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(c.getMedico(), new MedicoDTO()));
-            consultaResponseDTO.setPacienteResponseDTO((PacienteResponseDTO) convesorUtil.conveterDTO(c.getPaciente(), new PacienteResponseDTO()));
-            consultaResponseDTO.getPacienteResponseDTO().setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(c.getPaciente().getProprietario(), new ProprietarioDTO()));
+            ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(c, ConsultaResponseDTO.class);
+            consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(c.getMedico(), MedicoDTO.class));
+            consultaResponseDTO.setPacienteResponseDTO((PacienteResponseDTO) convesorUtil.conveterDTO(c.getPaciente(), PacienteResponseDTO.class));
+            consultaResponseDTO.getPacienteResponseDTO().setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(c.getPaciente().getProprietario(), ProprietarioDTO.class));
             listaConsultaResponseDTO.add(consultaResponseDTO);
         });
         return listaConsultaResponseDTO;

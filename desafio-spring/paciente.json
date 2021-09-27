@@ -2,30 +2,14 @@
   "id" : 1,
   "especie" : "cao",
   "raca" : "poodle",
-  "cor" : "preto55",
+  "cor" : "preto",
   "dataDeNascimento" : "2021-02-21",
-  "nome" : "preto",
+  "nome" : "joao",
   "proprietario" : {
-    "id" : 2,
-    "cpf" : "111.222.353-44",
-    "nome" : "Ed4",
-    "sobreNome" : "Nobre proprietario",
-    "dataNascimento" : "1981-02-06",
-    "endereco" : "Rua x10",
-    "telefone" : 51987987987
-  }
-}, {
-  "id" : 2,
-  "especie" : "cao",
-  "raca" : "poodle",
-  "cor" : "preto55",
-  "dataDeNascimento" : "2021-02-21",
-  "nome" : "preto",
-  "proprietario" : {
-    "id" : 2,
-    "cpf" : "111.222.353-44",
-    "nome" : "Ed4",
-    "sobreNome" : "Nobre proprietario",
+    "id" : 1,
+    "cpf" : "11122233344",
+    "nome" : "Ed1",
+    "sobreNome" : "Nobre",
     "dataNascimento" : "1981-02-06",
     "endereco" : "Rua x10",
     "telefone" : 51987987987

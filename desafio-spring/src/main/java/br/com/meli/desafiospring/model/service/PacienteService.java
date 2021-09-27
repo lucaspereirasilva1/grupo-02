@@ -32,8 +32,7 @@ public class PacienteService {
     private final ArquivoUtil<Paciente> arquivoUtil = new ArquivoUtil<>();
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
-        Paciente paciente = new Paciente();
-        paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, paciente);
+        Paciente paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, Paciente.class);
         paciente.setProprietario(ProprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
         paciente.setId(listaPaciente.size() + 1);
         listaPaciente.add(paciente);
@@ -62,8 +61,8 @@ public class PacienteService {
             e.printStackTrace();
         }
 
-        PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, new PacienteResponseDTO());
-        pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(paciente.getProprietario(), new ProprietarioDTO()));
+        PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, PacienteResponseDTO.class);
+        pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(paciente.getProprietario(), ProprietarioDTO.class));
         return pacienteResponseDTO;
     }
 
@@ -105,7 +104,7 @@ public class PacienteService {
                 if(verificarConsulta(listaPaciente.get(i))) {
                     throw new ValidaEntradaException("Paciente tem uma consulta!!! Nao e possivel excluir");
                 }else {
-                    pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(listaPaciente.get(i), new PacienteResponseDTO());
+                    pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(listaPaciente.get(i), PacienteResponseDTO.class);
                     pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(
                             listaPaciente.get(i).getProprietario()));
                     listaPaciente.remove(listaPaciente.get(i));
@@ -133,7 +132,7 @@ public class PacienteService {
     public List<PacienteResponseDTO> listar() {
         List<PacienteResponseDTO> listaPacienteResponseDTO = new ArrayList<>();
         for (Paciente p: listaPaciente) {
-            PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(p, new PacienteResponseDTO());
+            PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(p, PacienteResponseDTO.class);
             pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(p.getProprietario()));
             listaPacienteResponseDTO.add(pacienteResponseDTO);
         }

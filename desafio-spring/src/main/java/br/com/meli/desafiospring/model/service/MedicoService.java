@@ -25,8 +25,7 @@ public class MedicoService {
     private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
 
     public Integer cadastrar(MedicoDTO medicoDTO){
-        Medico medico = new Medico();
-        medico = (Medico) convesorUtil.conveterDTO(medicoDTO, medico);
+        Medico medico = (Medico) convesorUtil.conveterDTO(medicoDTO, Medico.class);
         medico.setId(listaMedico.size() + 1);
         listaMedico.add(medico);
         try {
@@ -70,7 +69,7 @@ public class MedicoService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return (MedicoDTO) convesorUtil.conveterDTO(medico, new MedicoDTO());
+        return (MedicoDTO) convesorUtil.conveterDTO(medico, MedicoDTO.class);
     }
 
     public void removerMedico(Integer id) {

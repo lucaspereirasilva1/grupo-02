@@ -9,11 +9,11 @@ public class ConvesorUtil {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public Object conveterDTO(Object entrada, Object saida) {
-        return modelMapper.map(entrada, saida.getClass());
+    public <T> Object conveterDTO(Object entrada, Class<T> saida) {
+        return modelMapper.map(entrada, saida);
     }
 
-    <S, T> List<T> conveterListaDTO(List<S> entrada, Class<T> saida) {
+    public <S, T> List<T> conveterListaDTO(List<S> entrada, Class<T> saida) {
         return entrada
                 .stream()
                 .map(element -> modelMapper.map(element, saida))
