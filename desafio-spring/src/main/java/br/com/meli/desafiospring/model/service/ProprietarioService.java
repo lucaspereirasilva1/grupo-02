@@ -7,6 +7,7 @@ import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.util.ArquivoUtil;
+import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class ProprietarioService {
         }
 
         proprietario.setId(tamanho + 1);
+        proprietario.setCpf(FormatdorUtil.formatarCPF(proprietarioDTO.getCpf()));
         listaProprietario.add(proprietario);
 
         try {
