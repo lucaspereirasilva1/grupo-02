@@ -6,6 +6,7 @@ import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
+import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class MedicoService {
 
     public Integer cadastrar(MedicoDTO medicoDTO){
         Medico medico = (Medico) convesorUtil.conveterDTO(medicoDTO, Medico.class);
+        medico.setCpf(FormatdorUtil.formatarCPF(medicoDTO.getCpf()));
         medico.setId(listaMedico.size() + 1);
         listaMedico.add(medico);
         try {

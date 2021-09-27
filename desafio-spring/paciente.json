@@ -7,7 +7,7 @@
   "nome" : "joao",
   "proprietario" : {
     "id" : 1,
-    "cpf" : "11122233344",
+    "cpf" : "111.222.333-44",
     "nome" : "Ed1",
     "sobreNome" : "Nobre",
     "dataNascimento" : "1981-02-06",
