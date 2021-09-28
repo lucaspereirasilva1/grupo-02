@@ -37,6 +37,7 @@ public class PacienteService {
         paciente.setProprietario(ProprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
         paciente.setId(listaPaciente.size() + 1);
         listaPaciente.add(paciente);
+
         try {
             arquivoUtil.collectionToJson(file, listaPaciente);
         } catch (IOException e) {

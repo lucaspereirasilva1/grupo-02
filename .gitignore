@@ -1,1 +1,11 @@
 *.DS_Store
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+paciente.json
+medicos.json
+proprietarios.json
+consultas.json
