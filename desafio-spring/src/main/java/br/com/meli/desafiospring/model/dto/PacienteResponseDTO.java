@@ -1,8 +1,6 @@
 package br.com.meli.desafiospring.model.dto;
 
 
-import br.com.meli.desafiospring.model.entity.Proprietario;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 

@@ -17,9 +17,10 @@ public class ArquivoUtil<T>{
         mapper.writeValue(file, users);
     }
 
-    public static List jsonToCollection(File file) throws IOException {
+    public List<T> jsonToCollection(File file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(file, new TypeReference<List>() {});
+        return mapper.readValue(file, new TypeReference<>() {
+        });
     }
 
 }

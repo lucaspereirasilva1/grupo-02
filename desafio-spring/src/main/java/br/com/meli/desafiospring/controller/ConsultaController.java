@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,7 +29,7 @@ public class ConsultaController {
     @PutMapping(value = "/manutencao/{id}", produces = "application/json")
     public ResponseEntity<ConsultaResponseDTO> editarConsulta(@RequestBody ConsultaRequestDTO consultaDTO, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
         ConsultaResponseDTO dto = consultaService.editar(consultaDTO, id);
-        URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(consultaService.getListaConsulta().size()).toUri();
+        URI uri = uriComponentsBuilder.path("/verconsulta/{codigo}").buildAndExpand(ConsultaService.getListaConsulta().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 

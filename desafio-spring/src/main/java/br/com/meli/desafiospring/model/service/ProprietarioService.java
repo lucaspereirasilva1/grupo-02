@@ -1,14 +1,13 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
-import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
-import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -27,12 +26,13 @@ public class ProprietarioService {
     private static final List<Proprietario> listaProprietario = new ArrayList<>();
     private final File file = new File("proprietarios.json");
     private final ArquivoUtil<Proprietario> arquivoUtil = new ArquivoUtil<>();
+    private static final Logger logger = Logger.getLogger(ProprietarioService.class);
 
     public Integer cadastrar(ProprietarioDTO proprietarioDTO){
         Proprietario proprietario = converteProprietario(proprietarioDTO);
 
         int tamanho;
-        if(listaProprietario.size()==0)
+        if(listaProprietario.isEmpty())
             tamanho=0;
         else
             tamanho=listaProprietario.size()+1;
@@ -48,9 +48,9 @@ public class ProprietarioService {
         try {
             arquivoUtil.collectionToJson(file, listaProprietario);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
-        return ((Proprietario) proprietario).getId();
+        return proprietario.getId();
     }
 
     public void validaEntradaProprietario(ProprietarioDTO proprietarioDTO) {
@@ -98,7 +98,7 @@ public class ProprietarioService {
         try {
             arquivoUtil.collectionToJson(file, listaProprietario);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
         return converteProprietarioDTO(proprietario);
     }
@@ -120,7 +120,7 @@ public class ProprietarioService {
         try {
             arquivoUtil.collectionToJson(file, listaProprietario);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
 
         return propritarioDTO;

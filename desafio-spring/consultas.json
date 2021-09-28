@@ -6,10 +6,41 @@
   "tratamento" : "teste",
   "medico" : {
     "id" : 1,
-    "cpf" : "432.555.378-42",
-    "nome" : "Lele",
+    "cpf" : "432.555.378-40",
+    "nome" : "Lili",
     "sobrenome" : "Santos",
-    "registro" : "CRM2",
+    "registro" : "CRM4",
+    "especialidade" : "clinico geral"
+  },
+  "paciente" : {
+    "id" : 1,
+    "especie" : "cao",
+    "raca" : "poodle",
+    "cor" : "preto",
+    "dataDeNascimento" : "2021-02-21",
+    "nome" : "joao",
+    "proprietario" : {
+      "id" : 1,
+      "cpf" : "111.222.333-44",
+      "nome" : "Ed1",
+      "sobreNome" : "Nobre",
+      "dataNascimento" : "1981-02-06",
+      "endereco" : "Rua x10",
+      "telefone" : 51987987987
+    }
+  }
+}, {
+  "id" : 2,
+  "dataHora" : "2000-01-21T00:01:00",
+  "motivo" : "teste",
+  "diagnostico" : "teste",
+  "tratamento" : "teste",
+  "medico" : {
+    "id" : 1,
+    "cpf" : "432.555.378-40",
+    "nome" : "Lili",
+    "sobrenome" : "Santos",
+    "registro" : "CRM4",
     "especialidade" : "clinico geral"
   },
   "paciente" : {

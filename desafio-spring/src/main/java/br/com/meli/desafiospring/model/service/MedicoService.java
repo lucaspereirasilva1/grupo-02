@@ -8,6 +8,7 @@ import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class MedicoService {
     private final File file = new File("medicos.json");
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
+    private static final Logger logger = Logger.getLogger(MedicoService.class);
 
     public Integer cadastrar(MedicoDTO medicoDTO){
         Medico medico = (Medico) convesorUtil.conveterDTO(medicoDTO, Medico.class);
@@ -33,7 +35,7 @@ public class MedicoService {
         try {
             arquivoUtil.collectionToJson(file, listaMedico);
         } catch (IOException e) {
-            e.printStackTrace();
+          logger.info(e);
         }
         return medico.getId();
     }
@@ -69,7 +71,7 @@ public class MedicoService {
         try {
             arquivoUtil.collectionToJson(file, listaMedico);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
         return (MedicoDTO) convesorUtil.conveterDTO(medico, MedicoDTO.class);
     }
@@ -88,7 +90,7 @@ public class MedicoService {
         try {
             arquivoUtil.collectionToJson(file, listaMedico);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e);
         }
     }
 

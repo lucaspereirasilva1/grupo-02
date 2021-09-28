@@ -26,7 +26,7 @@ public class ProprietarioController {
     @PutMapping(value = "/editar/{id}", produces = "application/json")
     public ResponseEntity<ProprietarioDTO> editarProprietario(@RequestBody ProprietarioDTO proprietarioDTO, @PathVariable Integer id, UriComponentsBuilder uriComponentsBuilder) {
         ProprietarioDTO dto = proprietarioService.editar(proprietarioDTO, id);
-        URI uri = uriComponentsBuilder.path("/verproprietario/{codigo}").buildAndExpand(proprietarioService.getListaProprietario().size()).toUri();
+        URI uri = uriComponentsBuilder.path("/verproprietario/{codigo}").buildAndExpand(ProprietarioService.getListaProprietario().size()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
