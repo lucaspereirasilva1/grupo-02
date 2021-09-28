@@ -9,7 +9,7 @@ import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
-import org.modelmapper.ModelMapper;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -30,6 +30,7 @@ public class PacienteService {
     private final ProprietarioService proprietarioService = new ProprietarioService();
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Paciente> arquivoUtil = new ArquivoUtil<>();
+    private static final Logger logger = Logger.getLogger(PacienteService.class);
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, Paciente.class);
@@ -39,7 +40,7 @@ public class PacienteService {
         try {
             arquivoUtil.collectionToJson(file, listaPaciente);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return paciente.getId();
     }
@@ -58,7 +59,7 @@ public class PacienteService {
         try {
             arquivoUtil.collectionToJson(file, listaPaciente);
         } catch (IOException e){
-            e.printStackTrace();
+            logger.error(e);
         }
 
         PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, PacienteResponseDTO.class);
@@ -75,7 +76,6 @@ public class PacienteService {
 
     public void validaEntrada(PacienteRequestDTO pacienteDTO) {
         if(ObjectUtils.isEmpty(pacienteDTO.getEspecie())
-            && ObjectUtils.isEmpty(pacienteDTO.getRaca())
             && ObjectUtils.isEmpty(pacienteDTO.getRaca())
             && ObjectUtils.isEmpty(pacienteDTO.getCor())
             && ObjectUtils.isEmpty(pacienteDTO.getDataDeNascimento())
@@ -114,7 +114,7 @@ public class PacienteService {
             try {
                 arquivoUtil.collectionToJson(file, listaPaciente);
             } catch (IOException e){
-                e.printStackTrace();
+                logger.error(e);
             }
         }
 

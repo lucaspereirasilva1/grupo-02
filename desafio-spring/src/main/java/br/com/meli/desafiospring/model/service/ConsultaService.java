@@ -9,6 +9,7 @@ import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -30,6 +31,7 @@ public class ConsultaService {
     private static final List<Consulta> listaConsulta = new ArrayList<>();
     private final File file = new File("consultas.json");
     private final ArquivoUtil<Consulta> arquivoUtil = new ArquivoUtil<>();
+    private static final Logger logger = Logger.getLogger(ConsultaService.class);
 
     public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
         Medico medico = MedicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
@@ -46,7 +48,7 @@ public class ConsultaService {
         try {
             arquivoUtil.collectionToJson(file, listaConsulta);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return ((Consulta) consulta).getId();
@@ -63,7 +65,7 @@ public class ConsultaService {
         try {
             arquivoUtil.collectionToJson(file, listaConsulta);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, ConsultaResponseDTO.class);
         consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), MedicoDTO.class));

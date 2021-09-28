@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/paciente")
@@ -37,7 +38,7 @@ public class PacienteController {
     }
 
     @DeleteMapping(value = "/deleta/{id}")
-    public HashMap<String, PacienteResponseDTO> removerPaciente(@PathVariable Integer id) {
+    public Map<String, PacienteResponseDTO> removerPaciente(@PathVariable Integer id) {
         PacienteResponseDTO pacienteResponseDTO = pacienteService.remover(id);
         HashMap<String, PacienteResponseDTO> retorno = new HashMap<>();
         retorno.put("Paciente abaixo removido: ", pacienteResponseDTO);
