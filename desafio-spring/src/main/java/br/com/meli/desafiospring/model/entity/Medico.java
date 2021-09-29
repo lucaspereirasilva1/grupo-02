@@ -1,10 +1,14 @@
 package br.com.meli.desafiospring.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Medico {
 
     private Integer id;

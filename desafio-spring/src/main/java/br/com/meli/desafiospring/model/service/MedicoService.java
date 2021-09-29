@@ -94,7 +94,7 @@ public class MedicoService {
         }
     }
 
-    public static Medico buscaMedico(String registro) {
+    public Medico buscaMedico(String registro) {
         Optional<Medico> optionalMedico = listaMedico.stream()
                 .filter(c -> c.getRegistro().equals(registro))
                 .findFirst();

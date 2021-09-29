@@ -68,7 +68,7 @@ public class PacienteService {
         return pacienteResponseDTO;
     }
 
-    public static Paciente buscaPaciente(Integer id) {
+    public Paciente buscaPaciente(Integer id) {
         Optional<Paciente> optionalPaciente = listaPaciente.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst();
