@@ -1,5 +1,6 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.model.dao.MedicoDAO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +10,10 @@ public class MedicoServiceTest {
 
     @Test
     void cadastrarMedicoTest() {
-        MedicoService mock = new MedicoService();
+
         MedicoDTO medicoDTO = new MedicoDTO();
+        MedicoDAO medicoDAO = new MedicoDAO();
+        MedicoService mockMedicoService = new MedicoService(medicoDAO);
 
         medicoDTO.setCpf("98765432198");
         medicoDTO.setNome("Jhony");
@@ -18,7 +21,7 @@ public class MedicoServiceTest {
         medicoDTO.setRegistro("CRM8765");
         medicoDTO.setEspecialidade("Clinico geral");
 
-        mock.cadastrar(medicoDTO);
+        mockMedicoService.cadastrar(medicoDTO);
 
         assertFalse(MedicoService.getListaMedico().isEmpty());
 
