@@ -7,15 +7,11 @@ import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.IConsulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Paciente;
-import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,13 +26,20 @@ public class ConsultaService {
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
     @Getter
     private static final List<Consulta> listaConsulta = new ArrayList<>();
-    private final File file = new File("consultas.json");
-    private final ConsultaDAO consultaDAO = new ConsultaDAO();
+    private final ConsultaDAO consultaDAO;
+    private final MedicoService medicoService;
+    private final PacienteService pacienteService;
 
+    public ConsultaService(ConsultaDAO consultaDAO, MedicoService medicoService
+            , PacienteService pacienteService) {
+        this.consultaDAO = consultaDAO;
+        this.medicoService = medicoService;
+        this.pacienteService = pacienteService;
+    }
 
     public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
-        Medico medico = MedicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
-        Paciente paciente = PacienteService.buscaPaciente(consultaRequestDTO.getIdPaciente());
+        Medico medico = medicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
+        Paciente paciente = pacienteService.buscaPaciente(consultaRequestDTO.getIdPaciente());
         IConsulta consulta = new Consulta().comId(listaConsulta.size() + 1)
                 .comMotivo(consultaRequestDTO.getMotivo())
                 .comDiagnostico(consultaRequestDTO.getDiagnostico())
@@ -45,7 +48,7 @@ public class ConsultaService {
                 .noPeriodo(consultaRequestDTO.getDataHora())
                 .comPaciente(paciente);
         listaConsulta.add((Consulta) consulta);
-        consultaDAO.inserir(file, listaConsulta);
+        consultaDAO.inserir(listaConsulta);
         return ((Consulta) consulta).getId();
     }
 
@@ -57,7 +60,7 @@ public class ConsultaService {
         assert consulta != null;
         consulta.comMotivo(consultaRequestDTO.getMotivo()).comDiagnostico(consultaRequestDTO.getDiagnostico())
                 .comTratamento(consultaRequestDTO.getTratamento());
-        consultaDAO.inserir(file, listaConsulta);
+        consultaDAO.inserir(listaConsulta);
         ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, ConsultaResponseDTO.class);
         consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), MedicoDTO.class));
         return consultaResponseDTO;
