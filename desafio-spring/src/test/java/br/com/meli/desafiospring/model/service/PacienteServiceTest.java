@@ -1,22 +1,13 @@
 package br.com.meli.desafiospring.model.service;
 
-import br.com.meli.desafiospring.exception.ValidaEntradaException;
-import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
-import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
-import br.com.meli.desafiospring.model.entity.Paciente;
-import br.com.meli.desafiospring.model.entity.Proprietario;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 public class PacienteServiceTest {
@@ -44,6 +35,13 @@ public class PacienteServiceTest {
         mock.cadastrar(pacienteRequestDTO);
 
         assertFalse(PacienteService.getListaPaciente().isEmpty());
+
+    }
+
+    @Test
+    void editar() {
+
+
 
     }
 

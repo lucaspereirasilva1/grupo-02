@@ -1,6 +1,7 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
+import br.com.meli.desafiospring.model.dao.ConsultaDAO;
 import br.com.meli.desafiospring.model.dto.*;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.IConsulta;
@@ -30,8 +31,8 @@ public class ConsultaService {
     @Getter
     private static final List<Consulta> listaConsulta = new ArrayList<>();
     private final File file = new File("consultas.json");
-    private final ArquivoUtil<Consulta> arquivoUtil = new ArquivoUtil<>();
-    private static final Logger logger = Logger.getLogger(ConsultaService.class);
+    private final ConsultaDAO consultaDAO = new ConsultaDAO();
+
 
     public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
         Medico medico = MedicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
@@ -44,13 +45,7 @@ public class ConsultaService {
                 .noPeriodo(consultaRequestDTO.getDataHora())
                 .comPaciente(paciente);
         listaConsulta.add((Consulta) consulta);
-
-        try {
-            arquivoUtil.collectionToJson(file, listaConsulta);
-        } catch (IOException e) {
-            logger.error(e);
-        }
-
+        consultaDAO.inserir(file, listaConsulta);
         return ((Consulta) consulta).getId();
     }
 
@@ -62,11 +57,7 @@ public class ConsultaService {
         assert consulta != null;
         consulta.comMotivo(consultaRequestDTO.getMotivo()).comDiagnostico(consultaRequestDTO.getDiagnostico())
                 .comTratamento(consultaRequestDTO.getTratamento());
-        try {
-            arquivoUtil.collectionToJson(file, listaConsulta);
-        } catch (IOException e) {
-            logger.error(e);
-        }
+        consultaDAO.inserir(file, listaConsulta);
         ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, ConsultaResponseDTO.class);
         consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), MedicoDTO.class));
         return consultaResponseDTO;
