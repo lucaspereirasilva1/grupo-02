@@ -1,6 +1,7 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
+import br.com.meli.desafiospring.model.dao.MedicoDAO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
@@ -22,21 +23,21 @@ public class MedicoService {
 
     @Getter
     private static final List<Medico> listaMedico = new ArrayList<>();
+    MedicoDAO medicoDAO;
     private final File file = new File("medicos.json");
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
     private static final Logger logger = Logger.getLogger(MedicoService.class);
 
+    public MedicoService(MedicoDAO medicoDAO){
+        this.medicoDAO = medicoDAO;
+    }
     public Integer cadastrar(MedicoDTO medicoDTO){
         Medico medico = (Medico) convesorUtil.conveterDTO(medicoDTO, Medico.class);
         medico.setCpf(FormatdorUtil.formatarCPF(medicoDTO.getCpf()));
         medico.setId(listaMedico.size() + 1);
         listaMedico.add(medico);
-        try {
-            arquivoUtil.collectionToJson(file, listaMedico);
-        } catch (IOException e) {
-          logger.info(e);
-        }
+        medicoDAO.inserir(listaMedico);
         return medico.getId();
     }
 
