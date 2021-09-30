@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.temporal.TemporalAccessor;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -64,8 +61,8 @@ class ConsultaServiceTest {
 
     @Test
     void listar() {
+        geraMassa();
         boolean validaLista = false;
-        criaConsulta();
         Optional<Consulta> firstConsulta = ConsultaService.getListaConsulta().stream()
                 .findFirst();
         assert firstConsulta.isPresent();
@@ -78,11 +75,15 @@ class ConsultaServiceTest {
                 break;
         }
 
+        assertFalse(listaConsultaResponseDTO.isEmpty());
         assertTrue(validaLista);
     }
 
     @Test
     void listarTotalMedicos() {
+        geraMassa();
+        List<String> listaTotalMedicos = consultaService.listarTotalMedicos();
+        assertFalse(listaTotalMedicos.isEmpty());
     }
 
     @Test
@@ -93,7 +94,19 @@ class ConsultaServiceTest {
     void validaEntrada() {
     }
 
-    void criaConsulta() {
+    void geraMassa() {
+        List<Consulta> listaRemoveConsulta = ConsultaService.getListaConsulta();
+        ConsultaService.getListaConsulta().removeAll(listaRemoveConsulta);
+
+        List<Medico> listaRemoveMedico = MedicoService.getListaMedico();
+        MedicoService.getListaMedico().removeAll(listaRemoveMedico);
+
+        Medico medico1 = new Medico(1, "12378909876", "zero", "um", "CRM1", "pediatra");
+        Medico medico2 = new Medico(2, "12378909877", "um", "dois", "CRM2", "dermatologista");
+
+        MedicoService.getListaMedico().add(medico1);
+        MedicoService.getListaMedico().add(medico2);
+
         LocalDateTime dataHora1 = LocalDateTime.of(2021, 9, 30, 12, 1);
         LocalDateTime dataHora2 = LocalDateTime.of(2021, 9, 30, 12, 2);
 
@@ -101,7 +114,7 @@ class ConsultaServiceTest {
                 .comMotivo("rotina")
                 .comDiagnostico("n/a")
                 .comTratamento("n/a")
-                .comMedico(new Medico(1, "12378909876", "zero", "um", "CRM1", "pediatra"))
+                .comMedico(medico1)
                 .noPeriodo(dataHora2)
                 .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
                         , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
@@ -109,7 +122,7 @@ class ConsultaServiceTest {
                 .comMotivo("exames")
                 .comDiagnostico("obesidade")
                 .comTratamento("exercicios")
-                .comMedico(new Medico(1, "12378909876", "zero", "um", "CRM1", "pediatra"))
+                .comMedico(medico2)
                 .noPeriodo(dataHora1)
                 .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
                         , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
