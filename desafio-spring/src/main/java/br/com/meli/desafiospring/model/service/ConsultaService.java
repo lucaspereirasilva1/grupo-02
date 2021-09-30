@@ -119,7 +119,7 @@ public class ConsultaService {
             throw new ValidaEntradaException("Data e hora nao informandos!!! Por gentileza informar.");
     }
 
-    public List<ConsultaResponseDTO> converterListaConsultaResponseDTO(List<Consulta> listaConsulta) {
+    private List<ConsultaResponseDTO> converterListaConsultaResponseDTO(List<Consulta> listaConsulta) {
         List<ConsultaResponseDTO> listaConsultaResponseDTO = new ArrayList<>();
         listaConsulta.forEach(c -> {
             ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(c, ConsultaResponseDTO.class);
