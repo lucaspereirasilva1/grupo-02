@@ -23,15 +23,16 @@ public class MedicoService {
 
     @Getter
     private static final List<Medico> listaMedico = new ArrayList<>();
-    MedicoDAO medicoDAO;
-    private final File file = new File("medicos.json");
+    private MedicoDAO medicoDAO;
+    private final File file = new File("medicos.json"); // retirar no final
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
-    private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
+    private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>(); // retirar no final
     private static final Logger logger = Logger.getLogger(MedicoService.class);
 
     public MedicoService(MedicoDAO medicoDAO){
         this.medicoDAO = medicoDAO;
     }
+
     public Integer cadastrar(MedicoDTO medicoDTO){
         Medico medico = (Medico) convesorUtil.conveterDTO(medicoDTO, Medico.class);
         medico.setCpf(FormatdorUtil.formatarCPF(medicoDTO.getCpf()));
@@ -69,11 +70,7 @@ public class MedicoService {
                 medico.setSobrenome(medicoDTO.getSobrenome());
                 medico.setRegistro(medicoDTO.getRegistro());
                 medico.setEspecialidade(medicoDTO.getEspecialidade());
-        try {
-            arquivoUtil.collectionToJson(file, listaMedico);
-        } catch (IOException e) {
-            logger.info(e);
-        }
+        medicoDAO.inserir(listaMedico);
         return (MedicoDTO) convesorUtil.conveterDTO(medico, MedicoDTO.class);
     }
 

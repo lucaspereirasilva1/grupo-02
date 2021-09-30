@@ -17,4 +17,5 @@ public class Medico {
     private String sobrenome;
     private String registro;
     private String especialidade;
+
 }
