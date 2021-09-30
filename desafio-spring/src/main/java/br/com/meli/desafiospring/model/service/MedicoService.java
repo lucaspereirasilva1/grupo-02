@@ -5,15 +5,11 @@ import br.com.meli.desafiospring.model.dao.MedicoDAO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
-import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,10 +20,7 @@ public class MedicoService {
     @Getter
     private static final List<Medico> listaMedico = new ArrayList<>();
     private MedicoDAO medicoDAO;
-    private final File file = new File("medicos.json"); // retirar no final
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
-    private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>(); // retirar no final
-    private static final Logger logger = Logger.getLogger(MedicoService.class);
 
     public MedicoService(MedicoDAO medicoDAO){
         this.medicoDAO = medicoDAO;
@@ -84,12 +77,7 @@ public class MedicoService {
                 }
             }
         }
-
-        try {
-            arquivoUtil.collectionToJson(file, listaMedico);
-        } catch (IOException e) {
-            logger.info(e);
-        }
+        medicoDAO.inserir(listaMedico);
     }
 
     public Medico buscaMedico(String registro) {
