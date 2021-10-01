@@ -50,17 +50,19 @@ public class ProprietarioServiceTest {
         assertNotNull(mockProprietarioDTO);
     }
 
-    
+
     @Test void editarProprietarioTest() {
         ProprietarioService.getListaProprietario().clear();
 
         Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
         Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
         Proprietario proprietario3 = new Proprietario(3, "33333333333", "Ed3", "Nobre", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario4 = new Proprietario(4, "44444444444", "Ed4", "Oliveira", LocalDate.now(), "Rua X34", 98798798798L);
 
         ProprietarioService.getListaProprietario().add(proprietario1);
         ProprietarioService.getListaProprietario().add(proprietario2);
         ProprietarioService.getListaProprietario().add(proprietario3);
+        ProprietarioService.getListaProprietario().add(proprietario4);
 
         mockProprietarioDTO.setCpf("98765432198");
         mockProprietarioDTO.setNome("Ed");
