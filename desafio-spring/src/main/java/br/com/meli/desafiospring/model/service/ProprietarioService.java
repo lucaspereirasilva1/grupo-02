@@ -1,10 +1,12 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
+import br.com.meli.desafiospring.model.dao.ProprietarioDAO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.util.ArquivoUtil;
+import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
 import org.apache.log4j.Logger;
@@ -20,17 +22,25 @@ import java.util.Optional;
 
 @Service
 public class ProprietarioService {
-
     private final ModelMapper modelMapper = new ModelMapper();
     @Getter
     private static final List<Proprietario> listaProprietario = new ArrayList<>();
+    private ProprietarioDAO proprietarioDAO;
     private final File file = new File("proprietarios.json");
+    private final ConvesorUtil convesorUtil = new ConvesorUtil();
     private final ArquivoUtil<Proprietario> arquivoUtil = new ArquivoUtil<>();
     private static final Logger logger = Logger.getLogger(ProprietarioService.class);
 
-    public Integer cadastrar(ProprietarioDTO proprietarioDTO){
-        Proprietario proprietario = converteProprietario(proprietarioDTO);
+    public ProprietarioService(ProprietarioDAO proprietarioDAO){
+        this.proprietarioDAO = proprietarioDAO;
+    }
 
+    public ProprietarioService() {
+
+    }
+
+    public Integer cadastrar(ProprietarioDTO proprietarioDTO){
+        Proprietario proprietario = (Proprietario) convesorUtil.conveterDTO(proprietarioDTO, Proprietario.class);
         int tamanho;
         if(listaProprietario.isEmpty())
             tamanho=0;
@@ -40,11 +50,9 @@ public class ProprietarioService {
         for(Proprietario p:listaProprietario) {
             tamanho=(p.getId());
         }
-
         proprietario.setId(tamanho + 1);
         proprietario.setCpf(FormatdorUtil.formatarCPF(proprietarioDTO.getCpf()));
         listaProprietario.add(proprietario);
-
         try {
             arquivoUtil.collectionToJson(file, listaProprietario);
         } catch (IOException e) {
@@ -52,36 +60,35 @@ public class ProprietarioService {
         }
         return proprietario.getId();
     }
-
     public void validaEntradaProprietario(ProprietarioDTO proprietarioDTO) {
-        if (ObjectUtils.isEmpty(proprietarioDTO.getCpf()))
-            throw new ValidaEntradaException("CPF nao informando!!! Por gentileza informar.");
-        else{
+
+        if (!validaGenerico("CPF",proprietarioDTO.getCpf())) {
             for(int i=0; i < listaProprietario.size(); i++) {
                 if (listaProprietario.get(i).getCpf().equals(proprietarioDTO.getCpf())) {
                     throw new ValidaEntradaException("Proprietario ja existente!");
                 }
             }
         }
-        if (ObjectUtils.isEmpty(proprietarioDTO.getNome()))
-            throw new ValidaEntradaException("Nome nao informando!!! Por gentileza informar.");
-        if(ObjectUtils.isEmpty(proprietarioDTO.getSobreNome()))
-            throw new ValidaEntradaException("Sobre nome nao informandos!!! Por gentileza informar.");
-        if(ObjectUtils.isEmpty(proprietarioDTO.getDataNascimento()))
-            throw new ValidaEntradaException("Data de nascimento nao informandos!!! Por gentileza informar.");
-        if(ObjectUtils.isEmpty(proprietarioDTO.getEndereco()))
-            throw new ValidaEntradaException("Endereco nao informandos!!! Por gentileza informar.");
-        if(ObjectUtils.isEmpty(proprietarioDTO.getTelefone()))
-            throw new ValidaEntradaException("Telefone nao informandos!!! Por gentileza informar.");
+        validaGenerico("Nome",proprietarioDTO.getNome());
+        validaGenerico("Sobrenome",proprietarioDTO.getSobreNome());
+        validaGenerico("Data Nascimento",proprietarioDTO.getDataNascimento());
+        validaGenerico("Endereço",proprietarioDTO.getEndereco());
+        validaGenerico("Telefone",proprietarioDTO.getTelefone());
     }
 
-    public Proprietario converteProprietario(ProprietarioDTO proprietarioDTO) {
-        return modelMapper.map(proprietarioDTO, Proprietario.class);
+    public boolean validaGenerico(String tipo,Object generico) {
+        if (ObjectUtils.isEmpty(generico)) {
+            throw new ValidaEntradaException(tipo+" nao informando!!! Por gentileza informar.");
+        }else {
+            return true;
+        }
     }
+
 
     public ProprietarioDTO converteProprietarioDTO(Proprietario proprietario) {
         return modelMapper.map(proprietario, ProprietarioDTO.class);
     }
+
 
     public ProprietarioDTO editar(ProprietarioDTO proprietarioDTO, Integer id) {
         Optional<Proprietario> optionalProprietario = listaProprietario.stream()
@@ -95,12 +102,8 @@ public class ProprietarioService {
         proprietario.setDataNascimento(proprietario.getDataNascimento());
         proprietario.setEndereco(proprietario.getEndereco());
         proprietario.setTelefone(proprietario.getTelefone());
-        try {
-            arquivoUtil.collectionToJson(file, listaProprietario);
-        } catch (IOException e) {
-            logger.info(e);
-        }
-        return converteProprietarioDTO(proprietario);
+        proprietarioDAO.inserir(listaProprietario);
+        return (ProprietarioDTO) convesorUtil.conveterDTO(proprietario, ProprietarioDTO.class);
     }
 
 
@@ -116,12 +119,7 @@ public class ProprietarioService {
                 }
             }
         }
-
-        try {
-            arquivoUtil.collectionToJson(file, listaProprietario);
-        } catch (IOException e) {
-            logger.info(e);
-        }
+        proprietarioDAO.inserir(listaProprietario);
 
         return propritarioDTO;
     }
@@ -134,11 +132,10 @@ public class ProprietarioService {
     }
 
     public boolean verificarConsulta(Proprietario proprietario) {
-        for (Consulta c: ConsultaService.getListaConsulta()) {
-            if(c.getPaciente().getProprietario().equals(proprietario))
+        for (Consulta c : ConsultaService.getListaConsulta()) {
+            if (c.getPaciente().getProprietario().equals(proprietario))
                 return true;
         }
         return false;
     }
-
 }
