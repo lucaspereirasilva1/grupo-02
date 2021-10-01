@@ -1,7 +1,6 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
-import br.com.meli.desafiospring.model.dao.ConsultaDAO;
 import br.com.meli.desafiospring.model.dao.MedicoDAO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.*;
@@ -20,14 +19,10 @@ public class MedicoServiceTest {
     MedicoDTO mockMedicoDTO = new MedicoDTO();
     MedicoDAO mockMedicoDAO = mock(MedicoDAO.class);
     MedicoService mockMedicoService = new MedicoService(mockMedicoDAO);
-    private final ConsultaDAO mockConsultaDAO = mock(ConsultaDAO.class);
-    private final PacienteService mockPacienteService = mock(PacienteService.class);
-    private final ConsultaService consultaService = new ConsultaService(mockConsultaDAO, mockMedicoService, mockPacienteService);
-
-
 
     @Test
     void cadastrarMedicoTest() {
+        MedicoService.getListaMedico().clear();
 
         mockMedicoDTO.setCpf("98765432198");
         mockMedicoDTO.setNome("Jhony");
@@ -43,7 +38,8 @@ public class MedicoServiceTest {
 
     }
     @Test
-    void validar() {
+    void validarMedicoTest() {
+        MedicoService.getListaMedico().clear();
 
         ValidaEntradaException exception = assertThrows(ValidaEntradaException.class, ()->{
             mockMedicoService.validar(mockMedicoDTO);
@@ -57,20 +53,27 @@ public class MedicoServiceTest {
     }
 
     @Test
-    void editar() {
+    void editarMedicoTest() {
+        MedicoService.getListaMedico().clear();
 
         Medico medico = new Medico(1, "98765432198", "Jose", "Zuim", "CRM8765", "Clinico Geral");
         MedicoService.getListaMedico().add(medico);
+
+        mockMedicoDTO.setCpf("11987654321");
+        mockMedicoDTO.setNome("Raul");
+        mockMedicoDTO.setSobrenome("Seixas");
+        mockMedicoDTO.setRegistro("CRM123");
+        mockMedicoDTO.setEspecialidade("Ortopedista");
 
         doNothing().when(mockMedicoDAO).inserir(anyList());
         mockMedicoService.editar(mockMedicoDTO, 1);
 
         assertNotNull(mockMedicoDTO);
-        mockMedicoService.removerMedico(1);
     }
 
     @Test
-    void removerMedico() {
+    void removerMedicoTest() {
+        MedicoService.getListaMedico().clear();
         List<Consulta> listConsulta = ConsultaService.getListaConsulta();
         ConsultaService.getListaConsulta().removeAll(listConsulta);
 
@@ -84,13 +87,25 @@ public class MedicoServiceTest {
     }
 
     @Test
-    void buscaMedico() {
+    void buscarMedicoTest() {
 
+        ProprietarioService.getListaProprietario().clear();
+
+        Medico medico = new Medico(1, "98765432198", "Joao", "Zuim", "CRM1", "Clinico Geral");
+        MedicoService.getListaMedico().add(medico);
+
+        doNothing().when(mockMedicoDAO).inserir(anyList());
+        mockMedicoService.buscaMedico("CRM1");
+
+        // Teste em construcao
+        // colocar o assert correto
 
     }
 
     @Test
-    void verificarConsultaVerdade() {
+    void verificarConsultaVerdadeTest() {
+        MedicoService.getListaMedico().clear();
+        ConsultaService.getListaConsulta().clear();
 
         List<Consulta> listConsulta = ConsultaService.getListaConsulta();
         ConsultaService.getListaConsulta().removeAll(listConsulta);
@@ -114,7 +129,9 @@ public class MedicoServiceTest {
     }
 
     @Test
-    void verificarConsultaFalse() {
+    void verificarConsultaFalseTest() {
+        MedicoService.getListaMedico().clear();
+        ConsultaService.getListaConsulta().clear();
 
         List<Consulta> listConsulta = ConsultaService.getListaConsulta();
         ConsultaService.getListaConsulta().removeAll(listConsulta);
@@ -124,7 +141,6 @@ public class MedicoServiceTest {
         boolean variavel = mockMedicoService.verificarConsulta(medico);
 
         assertFalse(variavel);
-
     }
 
 }
