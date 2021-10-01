@@ -121,6 +121,66 @@ class ConsultaServiceTest {
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
+    @Test
+    void validaEntradaPaciente() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setRegistroMedico("CRM1");
+        consultaRequestDTO.setMotivo("rotina");
+        consultaRequestDTO.setDataHora(LocalDateTime.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Id paciente nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaMedico() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setIdPaciente(1);
+        consultaRequestDTO.setMotivo("rotina");
+        consultaRequestDTO.setDataHora(LocalDateTime.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Registro medico nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaMotivo() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setIdPaciente(1);
+        consultaRequestDTO.setRegistroMedico("CRM1");
+        consultaRequestDTO.setDataHora(LocalDateTime.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Motivo nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaDataHora() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setIdPaciente(1);
+        consultaRequestDTO.setMotivo("rotina");
+        consultaRequestDTO.setRegistroMedico("CRM1");
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Data e hora nao informandos!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
     void geraMassa() {
         ConsultaService.getListaConsulta().clear();
         MedicoService.getListaMedico().clear();
