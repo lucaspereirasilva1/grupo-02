@@ -14,7 +14,7 @@ import java.util.List;
 public class ConsultaDAO implements IPersistir<Consulta> {
 
     private final ArquivoUtil<Consulta> arquivoUtil = new ArquivoUtil<>();
-    private static final Logger logger = Logger.getLogger(ConsultaService.class);
+    private static final Logger logger = Logger.getLogger(ConsultaDAO.class);
     private final File file = new File("consultas.json");
 
     @Override
