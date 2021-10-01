@@ -20,6 +20,10 @@ class ConsultaServiceTest {
     private final PacienteService mockPacienteService = mock(PacienteService.class);
     private final ConsultaService consultaService = new ConsultaService(mockConsultaDAO, mockMedicoService, mockPacienteService);
 
+    public ConsultaServiceTest() {
+        geraMassa();
+    }
+
     @Test
     void cadastrar() {
         ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO(LocalDateTime.now()
@@ -40,28 +44,29 @@ class ConsultaServiceTest {
 
     @Test
     void editar() {
+        boolean editou = false;
         ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO(LocalDateTime.now()
                 ,"rotina", "n/a", "n/a", "CRM1", 1);
-
-        IConsulta consulta = new Consulta().comId(1)
-                .comMotivo(consultaRequestDTO.getMotivo())
-                .comDiagnostico(consultaRequestDTO.getDiagnostico())
-                .comTratamento(consultaRequestDTO.getTratamento())
-                .comMedico(new Medico(1, "12378909876", "zero", "um", "CRM1", "pediatra"))
-                .noPeriodo(consultaRequestDTO.getDataHora())
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
-
-        ConsultaService.getListaConsulta().add((Consulta) consulta);
         doNothing().when(mockConsultaDAO).inserir(anyList());
 
-        ConsultaResponseDTO consultaResponseDTO = consultaService.editar(consultaRequestDTO, 1);
-        assertNotNull(consultaResponseDTO);
+        consultaService.editar(consultaRequestDTO, 1);
+        for (Consulta c: ConsultaService.getListaConsulta()) {
+            if (c.getDataHora().equals(consultaRequestDTO.getDataHora())
+                    && c.getMotivo().equals(consultaRequestDTO.getMotivo())
+                    && c.getDiagnostico().equals(consultaRequestDTO.getDiagnostico())
+                    && c.getTratamento().equals(consultaRequestDTO.getTratamento())
+                    && c.getMedico().getRegistro().equals(consultaRequestDTO.getRegistroMedico())
+                    && c.getPaciente().getId().equals(consultaRequestDTO.getIdPaciente())) {
+                editou = true;
+                break;
+            }
+        }
+
+        assertTrue(editou);
     }
 
     @Test
     void listar() {
-        geraMassa();
         boolean validaLista = false;
         Optional<Consulta> firstConsulta = ConsultaService.getListaConsulta().stream()
                 .findFirst();
@@ -81,13 +86,26 @@ class ConsultaServiceTest {
 
     @Test
     void listarTotalMedicos() {
-        geraMassa();
         List<String> listaTotalMedicos = consultaService.listarTotalMedicos();
         assertFalse(listaTotalMedicos.isEmpty());
     }
 
     @Test
     void listarPorDia() {
+        boolean listou = false;
+        LocalDate dia = LocalDate.of(2021, 11, 30);
+        List<ConsultaResponseDTO> listaConsultaResponseDTO = consultaService.listarPorDia("2021-11-30");
+
+        for (ConsultaResponseDTO c: listaConsultaResponseDTO) {
+            if (c.getDataHora().getYear() != dia.getYear()
+                    || c.getDataHora().getMonth() != dia.getMonth()
+                    || c.getDataHora().getDayOfMonth() != dia.getDayOfMonth()) {
+                continue;
+            }
+            listou = true;
+        }
+
+        assertTrue(listou);
     }
 
     @Test
@@ -95,25 +113,25 @@ class ConsultaServiceTest {
     }
 
     void geraMassa() {
-        List<Consulta> listaRemoveConsulta = ConsultaService.getListaConsulta();
-        ConsultaService.getListaConsulta().removeAll(listaRemoveConsulta);
+        ConsultaService.getListaConsulta().clear();
+        MedicoService.getListaMedico().clear();
 
-        List<Medico> listaRemoveMedico = MedicoService.getListaMedico();
-        MedicoService.getListaMedico().removeAll(listaRemoveMedico);
-
-        Medico medico1 = new Medico(1, "12378909876", "zero", "um", "CRM1", "pediatra");
-        Medico medico2 = new Medico(2, "12378909877", "um", "dois", "CRM2", "dermatologista");
+        Medico medico1 = new Medico(1, "11111111111", "zero", "um", "CRM1", "pediatra");
+        Medico medico2 = new Medico(2, "22222222222", "um", "tres", "CRM3", "dermatologista");
+        Medico medico3 = new Medico(3, "33333333333", "dois", "quatro", "CRM4", "ortopedista");
 
         MedicoService.getListaMedico().add(medico1);
         MedicoService.getListaMedico().add(medico2);
+        MedicoService.getListaMedico().add(medico3);
 
-        LocalDateTime dataHora1 = LocalDateTime.of(2021, 9, 30, 12, 1);
-        LocalDateTime dataHora2 = LocalDateTime.of(2021, 9, 30, 12, 2);
+        LocalDateTime dataHora1 = LocalDateTime.of(2021, 11, 30, 12, 1);
+        LocalDateTime dataHora2 = LocalDateTime.of(2021, 11, 30, 12, 2);
+        LocalDateTime dataHora3 = LocalDateTime.of(2021, 12, 31, 12, 2);
 
         IConsulta consulta1 = new Consulta().comId(1)
                 .comMotivo("rotina")
-                .comDiagnostico("n/a")
-                .comTratamento("n/a")
+                .comDiagnostico("a realizar")
+                .comTratamento("a realizar")
                 .comMedico(medico1)
                 .noPeriodo(dataHora2)
                 .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
@@ -126,8 +144,17 @@ class ConsultaServiceTest {
                 .noPeriodo(dataHora1)
                 .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
                         , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
+        IConsulta consulta3 = new Consulta().comId(3)
+                .comMotivo("cirurgia")
+                .comDiagnostico("apendice")
+                .comTratamento("n/a")
+                .comMedico(medico3)
+                .noPeriodo(dataHora3)
+                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
+                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
 
         ConsultaService.getListaConsulta().add((Consulta) consulta1);
         ConsultaService.getListaConsulta().add((Consulta) consulta2);
+        ConsultaService.getListaConsulta().add((Consulta) consulta3);
     }
 }
