@@ -27,6 +27,7 @@ class ConsultaServiceTest {
 
     @Test
     void cadastrar() {
+        boolean cadastrou = false;
         ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO(LocalDateTime.now()
                 ,"rotina", "n/a", "n/a", "CRM1", 1);
 
@@ -39,8 +40,15 @@ class ConsultaServiceTest {
                 .thenReturn(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
                         , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
 
-        consultaService.cadastrar(consultaRequestDTO);
-        assertFalse(ConsultaService.getListaConsulta().isEmpty());
+        Integer id = consultaService.cadastrar(consultaRequestDTO);
+
+        for (Consulta c: ConsultaService.getListaConsulta()) {
+            if (c.getId().equals(id)) {
+                cadastrou = true;
+                break;
+            }
+        }
+        assertTrue(cadastrou);
     }
 
     @Test

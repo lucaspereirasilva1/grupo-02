@@ -1,5 +1,6 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.model.dao.PacienteDAO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import org.junit.jupiter.api.Test;
@@ -8,13 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 public class PacienteServiceTest {
 
     @Test
     void cadastrarPacienteTest() {
-        PacienteService mock = new PacienteService();
+        PacienteDAO mockPacienteDAO = mock(PacienteDAO.class);
+        ProprietarioService mockProprietarioService = new ProprietarioService();
+        PacienteService pacienteService = new PacienteService(mockPacienteDAO, mockProprietarioService);
         PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
 
         ProprietarioDTO proprietarioDTO = new ProprietarioDTO();
@@ -32,7 +36,7 @@ public class PacienteServiceTest {
         pacienteRequestDTO.setNome("teste");
         pacienteRequestDTO.setIdProprietario(1);
 
-        mock.cadastrar(pacienteRequestDTO);
+        pacienteService.cadastrar(pacienteRequestDTO);
 
         assertFalse(PacienteService.getListaPaciente().isEmpty());
 
