@@ -59,7 +59,8 @@ public class ConsultaService {
         Consulta consulta = optionalConsulta.orElse(null);
         assert consulta != null;
         consulta.comMotivo(consultaRequestDTO.getMotivo()).comDiagnostico(consultaRequestDTO.getDiagnostico())
-                .comTratamento(consultaRequestDTO.getTratamento());
+                .comTratamento(consultaRequestDTO.getTratamento())
+                .noPeriodo(consultaRequestDTO.getDataHora());
         consultaDAO.inserir(listaConsulta);
         ConsultaResponseDTO consultaResponseDTO = (ConsultaResponseDTO) convesorUtil.conveterDTO(consulta, ConsultaResponseDTO.class);
         consultaResponseDTO.setMedicoDTO((MedicoDTO) convesorUtil.conveterDTO(consulta.getMedico(), MedicoDTO.class));
