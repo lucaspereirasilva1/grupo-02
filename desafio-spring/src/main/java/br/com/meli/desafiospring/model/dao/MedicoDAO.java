@@ -14,7 +14,7 @@ import java.util.List;
 public class MedicoDAO implements IPersistir<Medico>{
 
     private final ArquivoUtil<Medico> arquivoUtil = new ArquivoUtil<>();
-    private static final Logger logger = Logger.getLogger(MedicoService.class);
+    private static final Logger logger = Logger.getLogger(MedicoDAO.class);
     private final File file = new File("medicos.json");
 
     @Override

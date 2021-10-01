@@ -14,7 +14,7 @@ import java.util.List;
 public class ProprietarioDAO implements IPersistir<Proprietario>{
 
     private final ArquivoUtil<Proprietario> arquivoUtil = new ArquivoUtil<>();
-    private static final Logger logger = Logger.getLogger(ProprietarioService.class);
+    private static final Logger logger = Logger.getLogger(ProprietarioDAO.class);
     private final File file = new File("proprietario.json");
 
     @Override

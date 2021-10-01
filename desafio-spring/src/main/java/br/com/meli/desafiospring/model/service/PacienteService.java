@@ -1,20 +1,17 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
+import br.com.meli.desafiospring.model.dao.PacienteDAO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Paciente;
-import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,23 +23,21 @@ public class PacienteService {
 
     @Getter
     private static final List<Paciente> listaPaciente = new ArrayList<>();
-    private final File file = new File ("paciente.json");
-    private final ProprietarioService proprietarioService = new ProprietarioService();
+    private final ProprietarioService proprietarioService;
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
-    private final ArquivoUtil<Paciente> arquivoUtil = new ArquivoUtil<>();
-    private static final Logger logger = Logger.getLogger(PacienteService.class);
+    private final PacienteDAO pacienteDAO;
+
+    public PacienteService(PacienteDAO pacienteDAO, ProprietarioService proprietarioService) {
+        this.pacienteDAO = pacienteDAO;
+        this.proprietarioService = proprietarioService;
+    }
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, Paciente.class);
         paciente.setProprietario(ProprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
         paciente.setId(listaPaciente.size() + 1);
         listaPaciente.add(paciente);
-
-        try {
-            arquivoUtil.collectionToJson(file, listaPaciente);
-        } catch (IOException e) {
-            logger.error(e);
-        }
+        pacienteDAO.inserir(listaPaciente);
         return paciente.getId();
     }
 
@@ -56,12 +51,7 @@ public class PacienteService {
         paciente.setCor(pacienteDTO.getCor());
         paciente.setDataDeNascimento(pacienteDTO.getDataDeNascimento());
         paciente.setNome(pacienteDTO.getNome());
-
-        try {
-            arquivoUtil.collectionToJson(file, listaPaciente);
-        } catch (IOException e){
-            logger.error(e);
-        }
+        pacienteDAO.inserir(listaPaciente);
 
         PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, PacienteResponseDTO.class);
         pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(paciente.getProprietario(), ProprietarioDTO.class));
@@ -111,12 +101,7 @@ public class PacienteService {
                     listaPaciente.remove(listaPaciente.get(i));
                 }
             }
-
-            try {
-                arquivoUtil.collectionToJson(file, listaPaciente);
-            } catch (IOException e){
-                logger.error(e);
-            }
+            pacienteDAO.inserir(listaPaciente);
         }
 
         return pacienteResponseDTO;
