@@ -1,5 +1,6 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.ConsultaDAO;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.ConsultaResponseDTO;
@@ -109,7 +110,75 @@ class ConsultaServiceTest {
     }
 
     @Test
-    void validaEntrada() {
+    void validaEntradaTodosCampos() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Campos obrigatorios nao informados: Id do paciente, registro medico, motivo, data e hora";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaPaciente() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setRegistroMedico("CRM1");
+        consultaRequestDTO.setMotivo("rotina");
+        consultaRequestDTO.setDataHora(LocalDateTime.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Id paciente nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaMedico() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setIdPaciente(1);
+        consultaRequestDTO.setMotivo("rotina");
+        consultaRequestDTO.setDataHora(LocalDateTime.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Registro medico nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaMotivo() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setIdPaciente(1);
+        consultaRequestDTO.setRegistroMedico("CRM1");
+        consultaRequestDTO.setDataHora(LocalDateTime.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Motivo nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaDataHora() {
+        ConsultaRequestDTO consultaRequestDTO = new ConsultaRequestDTO();
+        consultaRequestDTO.setIdPaciente(1);
+        consultaRequestDTO.setMotivo("rotina");
+        consultaRequestDTO.setRegistroMedico("CRM1");
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () -> consultaService.validaEntrada(consultaRequestDTO));
+
+        String mensagemEsperada = "Data e hora nao informandos!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
     void geraMassa() {

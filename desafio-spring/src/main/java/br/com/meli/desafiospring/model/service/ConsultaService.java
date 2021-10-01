@@ -117,8 +117,7 @@ public class ConsultaService {
         if (ObjectUtils.isEmpty(consultaRequestDTO.getMotivo()))
             throw new ValidaEntradaException("Motivo nao informando!!! Por gentileza informar.");
         if(ObjectUtils.isEmpty(consultaRequestDTO.getDataHora()))
-            throw new ValidaEntradaException("Data e hora nao informandos!!! Por gentileza informar.");
-    }
+            throw new ValidaEntradaException("Data e hora nao informandos!!! Por gentileza informar.");}
 
     private List<ConsultaResponseDTO> converterListaConsultaResponseDTO(List<Consulta> listaConsulta) {
         List<ConsultaResponseDTO> listaConsultaResponseDTO = new ArrayList<>();
