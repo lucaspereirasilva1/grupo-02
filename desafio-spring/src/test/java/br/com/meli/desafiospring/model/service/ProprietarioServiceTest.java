@@ -35,4 +35,19 @@ public class ProprietarioServiceTest {
     }
 
 
+    @Test
+    void validarProprietarioTest() {
+        ProprietarioService.getListaProprietario().clear();
+        mockProprietarioDTO.setCpf("98765432198");
+        mockProprietarioDTO.setNome("Ed");
+        mockProprietarioDTO.setSobreNome("NobreMix");
+        mockProprietarioDTO.setDataNascimento(LocalDate.now());
+        mockProprietarioDTO.setEndereco("Rua X34");
+        mockProprietarioDTO.setTelefone(98798798798L);
+
+        doNothing().when(mockProprietarioDAO).inserir(anyList());
+        mockProprietarioService.validaEntradaProprietario(mockProprietarioDTO);
+        assertNotNull(mockProprietarioDTO);
+    }
+
 }
