@@ -47,23 +47,16 @@ public class ProprietarioService {
         else
             tamanho=listaProprietario.size()+1;
 
-        for(Proprietario p:listaProprietario) {
-            tamanho=(p.getId());
-        }
+        for(Proprietario p:listaProprietario) {tamanho=(p.getId());}
         proprietario.setId(tamanho + 1);
-        proprietario.setCpf(FormatdorUtil.formatarCPF(proprietarioDTO.getCpf()));
         listaProprietario.add(proprietario);
-        try {
-            arquivoUtil.collectionToJson(file, listaProprietario);
-        } catch (IOException e) {
-            logger.info(e);
-        }
-        return proprietario.getId();
-    }
-    public void validaEntradaProprietario(ProprietarioDTO proprietarioDTO) {
+        proprietarioDAO.inserir(listaProprietario);
+        return proprietario.getId();    }
 
-        if (!validaGenerico("CPF",proprietarioDTO.getCpf())) {
-            for(int i=0; i < listaProprietario.size(); i++) {
+    public void validaEntradaProprietario(ProprietarioDTO proprietarioDTO) {
+       if (validaGenerico("CPF",proprietarioDTO.getCpf())) {
+           proprietarioDTO.setCpf(FormatdorUtil.formatarCPF(proprietarioDTO.getCpf()));
+           for(int i=0; i < listaProprietario.size(); i++) {
                 if (listaProprietario.get(i).getCpf().equals(proprietarioDTO.getCpf())) {
                     throw new ValidaEntradaException("Proprietario ja existente!");
                 }
@@ -88,8 +81,6 @@ public class ProprietarioService {
     public ProprietarioDTO converteProprietarioDTO(Proprietario proprietario) {
         return modelMapper.map(proprietario, ProprietarioDTO.class);
     }
-
-
     public ProprietarioDTO editar(ProprietarioDTO proprietarioDTO, Integer id) {
         Optional<Proprietario> optionalProprietario = listaProprietario.stream()
                 .filter(c -> c.getId().equals(id))
@@ -109,21 +100,17 @@ public class ProprietarioService {
 
     public ProprietarioDTO excluir(Integer id) {
         ProprietarioDTO propritarioDTO = new ProprietarioDTO();
-        for (int i = 0; i < listaProprietario.size(); i++) {
-            if(listaProprietario.get(i).getId().equals(id)) {
-                if(verificarConsulta(listaProprietario.get(i))) {
+        for (int i = 0; i < listaProprietario.size(); i++)
+            if(listaProprietario.get(i).getId().equals(id))
+                if(verificarConsulta(listaProprietario.get(i)))
                     throw new ValidaEntradaException("Proprietario tem uma consulta!!! Nao e possivel excluir");
-                }else {
+                else
                     listaProprietario.remove(listaProprietario.get(i));
 
-                }
-            }
-        }
         proprietarioDAO.inserir(listaProprietario);
 
         return propritarioDTO;
     }
-
     public static Proprietario buscarProprietario(Integer id) {
         Optional<Proprietario> optionalProprietario = listaProprietario.stream()
                 .filter(c -> c.getId().equals(id))
@@ -131,11 +118,10 @@ public class ProprietarioService {
         return optionalProprietario.orElse(null);
     }
 
-    public boolean verificarConsulta(Proprietario proprietario) {
-        for (Consulta c : ConsultaService.getListaConsulta()) {
+    public static boolean verificarConsulta(Proprietario proprietario) {
+        for (Consulta c : ConsultaService.getListaConsulta())
             if (c.getPaciente().getProprietario().equals(proprietario))
                 return true;
-        }
-        return false;
+            return false;
     }
 }
