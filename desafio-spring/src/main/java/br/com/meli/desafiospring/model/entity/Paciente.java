@@ -21,4 +21,11 @@ public class Paciente {
     private String nome;
     private Proprietario proprietario;
 
+    public Paciente(String especie, String raca, String cor, LocalDate dataDeNascimento, String nome) {
+        this.especie = especie;
+        this.raca = raca;
+        this.cor = cor;
+        this.dataDeNascimento = dataDeNascimento;
+        this.nome = nome;
+    }
 }
