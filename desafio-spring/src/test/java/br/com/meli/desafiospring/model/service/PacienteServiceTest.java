@@ -4,15 +4,16 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.PacienteDAO;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
+import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.entity.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
@@ -277,6 +278,8 @@ public class PacienteServiceTest {
 
     @Test
     void listar() {
+        List<PacienteResponseDTO> listaPacienteResponseDTO = pacienteService.listar();
+        assertFalse(listaPacienteResponseDTO.isEmpty());
     }
 
     private void gerarMassaPaciente() {
