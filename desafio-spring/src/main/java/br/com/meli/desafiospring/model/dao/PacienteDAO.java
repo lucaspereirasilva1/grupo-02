@@ -1,8 +1,6 @@
 package br.com.meli.desafiospring.model.dao;
 
-import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Paciente;
-import br.com.meli.desafiospring.model.service.ConsultaService;
 import br.com.meli.desafiospring.model.service.PacienteService;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import org.apache.log4j.Logger;

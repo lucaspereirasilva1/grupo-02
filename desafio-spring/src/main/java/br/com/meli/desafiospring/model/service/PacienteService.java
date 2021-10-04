@@ -34,7 +34,7 @@ public class PacienteService {
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, Paciente.class);
-        paciente.setProprietario(ProprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
+        paciente.setProprietario(proprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
         paciente.setId(listaPaciente.size() + 1);
         listaPaciente.add(paciente);
         pacienteDAO.inserir(listaPaciente);

@@ -228,7 +228,7 @@ public class ProprietarioServiceTest {
         ProprietarioService.getListaProprietario().add(proprietario3);
 
         doNothing().when(mockProprietarioDAO).inserir(anyList());
-        ProprietarioService.buscarProprietario(1);
+        proprietarioService.buscarProprietario(1);
 
         doNothing().when(mockProprietarioDAO).inserir(anyList());
     }
