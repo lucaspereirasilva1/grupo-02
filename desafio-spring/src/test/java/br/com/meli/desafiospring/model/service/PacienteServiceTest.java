@@ -2,11 +2,13 @@ package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.PacienteDAO;
-import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
+import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.*;
+import br.com.meli.desafiospring.util.ConvesorUtil;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +23,8 @@ public class PacienteServiceTest {
 
     PacienteDAO mockPacienteDAO = mock(PacienteDAO.class);
     ProprietarioService mockProprietarioService = mock(ProprietarioService.class);
-    PacienteService pacienteService = new PacienteService(mockPacienteDAO, mockProprietarioService);
+    ConvesorUtil mockConversorUtil = mock(ConvesorUtil.class);
+    PacienteService pacienteService = new PacienteService(mockPacienteDAO, mockProprietarioService, mockConversorUtil);
 
     public PacienteServiceTest() {
         gerarMassaPaciente();
@@ -38,6 +41,10 @@ public class PacienteServiceTest {
         doNothing().when(mockPacienteDAO).inserir(anyList());
         when((mockProprietarioService).buscarProprietario(anyInt()))
                 .thenReturn(new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L));
+        when((mockConversorUtil).conveterDTO(any(PacienteRequestDTO.class), any()))
+                .thenReturn(new Paciente(pacienteRequestDTO.getEspecie(), pacienteRequestDTO.getRaca()
+                                , pacienteRequestDTO.getCor(), pacienteRequestDTO.getDataDeNascimento()
+                        ,pacienteRequestDTO.getNome()));
 
         Integer id = pacienteService.cadastrar(pacienteRequestDTO);
 
@@ -59,9 +66,28 @@ public class PacienteServiceTest {
                 , "marrom", LocalDate.now()
                 ,"um", 1);
 
-        doNothing().when(mockPacienteDAO).inserir(anyList());
+        PacienteResponseDTO pacienteResponseDTO = new PacienteResponseDTO();
+        pacienteResponseDTO.setEspecie(PacienteService.getListaPaciente().get(0).getEspecie());
+        pacienteResponseDTO.setRaca(PacienteService.getListaPaciente().get(0).getRaca());
+        pacienteResponseDTO.setCor(PacienteService.getListaPaciente().get(0).getCor());
+        pacienteResponseDTO.setDataDeNascimento(PacienteService.getListaPaciente().get(0).getDataDeNascimento());
+        pacienteResponseDTO.setNome(PacienteService.getListaPaciente().get(0).getNome());
 
-        pacienteService.editar(pacienteRequestDTO, 1);
+        ProprietarioDTO proprietarioDTO = new ProprietarioDTO();
+        proprietarioDTO.setCpf(PacienteService.getListaPaciente().get(0).getProprietario().getCpf());
+        proprietarioDTO.setNome(PacienteService.getListaPaciente().get(0).getProprietario().getNome());
+        proprietarioDTO.setSobreNome(PacienteService.getListaPaciente().get(0).getProprietario().getSobreNome());
+        proprietarioDTO.setDataNascimento(PacienteService.getListaPaciente().get(0).getProprietario().getDataNascimento());
+        proprietarioDTO.setEndereco(PacienteService.getListaPaciente().get(0).getProprietario().getEndereco());
+        proprietarioDTO.setTelefone(PacienteService.getListaPaciente().get(0).getProprietario().getTelefone());
+
+        doNothing().when(mockPacienteDAO).inserir(anyList());
+        when((mockConversorUtil).conveterDTO(any(Paciente.class), any()))
+                .thenReturn(pacienteResponseDTO);
+        when((mockConversorUtil).conveterDTO(any(Proprietario.class), any()))
+                .thenReturn(proprietarioDTO);
+
+        PacienteResponseDTO pacienteResponseDTORetorno = pacienteService.editar(pacienteRequestDTO, 1);
 
         for (Paciente p: PacienteService.getListaPaciente()) {
             if (p.getProprietario().getId().equals(pacienteRequestDTO.getIdProprietario())
@@ -75,6 +101,7 @@ public class PacienteServiceTest {
             }
         }
 
+        assertNotNull(pacienteResponseDTORetorno);
         assertTrue(editou);
 
     }
@@ -217,6 +244,26 @@ public class PacienteServiceTest {
 
     @Test
     void remover() {
+        ProprietarioDTO proprietarioDTO = new ProprietarioDTO();
+        proprietarioDTO.setCpf(PacienteService.getListaPaciente().get(0).getProprietario().getCpf());
+        proprietarioDTO.setNome(PacienteService.getListaPaciente().get(0).getProprietario().getNome());
+        proprietarioDTO.setSobreNome(PacienteService.getListaPaciente().get(0).getProprietario().getSobreNome());
+        proprietarioDTO.setDataNascimento(PacienteService.getListaPaciente().get(0).getProprietario().getDataNascimento());
+        proprietarioDTO.setEndereco(PacienteService.getListaPaciente().get(0).getProprietario().getEndereco());
+        proprietarioDTO.setTelefone(PacienteService.getListaPaciente().get(0).getProprietario().getTelefone());
+
+        PacienteResponseDTO pacienteResponseDTO = new PacienteResponseDTO();
+        pacienteResponseDTO.setEspecie(PacienteService.getListaPaciente().get(0).getEspecie());
+        pacienteResponseDTO.setRaca(PacienteService.getListaPaciente().get(0).getRaca());
+        pacienteResponseDTO.setCor(PacienteService.getListaPaciente().get(0).getCor());
+        pacienteResponseDTO.setDataDeNascimento(PacienteService.getListaPaciente().get(0).getDataDeNascimento());
+        pacienteResponseDTO.setNome(PacienteService.getListaPaciente().get(0).getNome());
+
+        doNothing().when(mockPacienteDAO).inserir(anyList());
+        when((mockConversorUtil).conveterDTO(any(Paciente.class), any()))
+                .thenReturn(pacienteResponseDTO);
+        when((mockConversorUtil).conveterDTO(any(Proprietario.class), any()))
+                .thenReturn(proprietarioDTO);
         doNothing().when(mockPacienteDAO).inserir(anyList());
         pacienteService.remover(1);
         Optional<Paciente> pacienteOptional = PacienteService.getListaPaciente().stream()
@@ -317,8 +364,8 @@ public class PacienteServiceTest {
     private void gerarMassaPaciente() {
         PacienteService.getListaPaciente().clear();
         Proprietario proprietario1 = new Proprietario(1, "11111111111", "ed", "nobre", LocalDate.now(), "rua zero", 1111111111L);
-        Proprietario proprietario2 = new Proprietario(1, "22222222222", "lucas", "pereira", LocalDate.now(), "rua um", 1122222222L);
-        Proprietario proprietario3 = new Proprietario(1, "33333333333", "rafel", "silva", LocalDate.now(), "rua dois", 1133333333L);
+        Proprietario proprietario2 = new Proprietario(2, "22222222222", "lucas", "pereira", LocalDate.now(), "rua um", 1122222222L);
+        Proprietario proprietario3 = new Proprietario(3, "33333333333", "rafel", "silva", LocalDate.now(), "rua dois", 1133333333L);
 
         Paciente paciente1 = new Paciente(1,"canina", "dalmata"
                 , "preto", LocalDate.now()

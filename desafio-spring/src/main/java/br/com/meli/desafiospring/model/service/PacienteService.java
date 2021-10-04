@@ -24,12 +24,13 @@ public class PacienteService {
     @Getter
     private static final List<Paciente> listaPaciente = new ArrayList<>();
     private final ProprietarioService proprietarioService;
-    private final ConvesorUtil convesorUtil = new ConvesorUtil();
+    private final ConvesorUtil convesorUtil;
     private final PacienteDAO pacienteDAO;
 
-    public PacienteService(PacienteDAO pacienteDAO, ProprietarioService proprietarioService) {
+    public PacienteService(PacienteDAO pacienteDAO, ProprietarioService proprietarioService, ConvesorUtil convesorUtil) {
         this.pacienteDAO = pacienteDAO;
         this.proprietarioService = proprietarioService;
+        this.convesorUtil = convesorUtil;
     }
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
@@ -67,11 +68,11 @@ public class PacienteService {
 
     public void validaEntrada(PacienteRequestDTO pacienteDTO) {
         if(ObjectUtils.isEmpty(pacienteDTO.getEspecie())
-            && ObjectUtils.isEmpty(pacienteDTO.getRaca())
-            && ObjectUtils.isEmpty(pacienteDTO.getCor())
-            && ObjectUtils.isEmpty(pacienteDTO.getDataDeNascimento())
-            && ObjectUtils.isEmpty(pacienteDTO.getNome())
-            && ObjectUtils.isEmpty(pacienteDTO.getIdProprietario()))
+                && ObjectUtils.isEmpty(pacienteDTO.getRaca())
+                && ObjectUtils.isEmpty(pacienteDTO.getCor())
+                && ObjectUtils.isEmpty(pacienteDTO.getDataDeNascimento())
+                && ObjectUtils.isEmpty(pacienteDTO.getNome())
+                && ObjectUtils.isEmpty(pacienteDTO.getIdProprietario()))
             throw new ValidaEntradaException("Nenhum campo informado!!! Por gentileza informar: especie, raca, cor" +
                     ", data de nascimento e nome");
         if(ObjectUtils.isEmpty(pacienteDTO.getIdProprietario()))
