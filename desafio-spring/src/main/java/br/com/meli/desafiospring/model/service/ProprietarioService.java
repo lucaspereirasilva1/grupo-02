@@ -5,17 +5,13 @@ import br.com.meli.desafiospring.model.dao.ProprietarioDAO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Proprietario;
-import br.com.meli.desafiospring.util.ArquivoUtil;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
-import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
