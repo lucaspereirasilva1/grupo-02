@@ -226,6 +226,38 @@ public class PacienteServiceTest {
     }
 
     @Test
+    void removerComConsulta() {
+        ConsultaService.getListaConsulta().clear();
+
+        Medico medico = new Medico(1, "11111111111", "zero"
+                , "um", "CRM1", "pediatra");
+        Paciente paciente = new Paciente(PacienteService.getListaPaciente().size() + 1,"mamifero"
+                , "baleia", "preto", LocalDate.now()
+                ,"tres", new Proprietario(1, "11111111111"
+                , "ed", "nobre", LocalDate.now()
+                , "rua zero", 1111111111L));
+        IConsulta consulta = new Consulta().comId(1)
+                .comMotivo("rotina")
+                .comDiagnostico("a realizar")
+                .comTratamento("a realizar")
+                .comMedico(medico)
+                .noPeriodo(LocalDateTime.now())
+                .comPaciente(paciente);
+        PacienteService.getListaPaciente().add(paciente);
+        ConsultaService.getListaConsulta().add((Consulta) consulta);
+
+        doNothing().when(mockPacienteDAO).inserir(anyList());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.remover(paciente.getId()));
+
+        String mensagemEsperada = "Paciente tem uma consulta!!! Nao e possivel excluir";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
     void verificarConsultaExistente() {
         boolean verifica = false;
         ConsultaService.getListaConsulta().clear();

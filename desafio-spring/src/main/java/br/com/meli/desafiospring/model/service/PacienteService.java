@@ -85,8 +85,7 @@ public class PacienteService {
         if(ObjectUtils.isEmpty(pacienteDTO.getDataDeNascimento()))
             throw new ValidaEntradaException("Data de nascimento nao informada!!! Por gentileza informar.");
         if(ObjectUtils.isEmpty(pacienteDTO.getNome()))
-            throw new ValidaEntradaException("Nome nao informado!!! Por gentileza informar.");
-    }
+            throw new ValidaEntradaException("Nome nao informado!!! Por gentileza informar."); }
 
     public PacienteResponseDTO remover(Integer id) {
         PacienteResponseDTO pacienteResponseDTO = new PacienteResponseDTO();
@@ -96,8 +95,8 @@ public class PacienteService {
                     throw new ValidaEntradaException("Paciente tem uma consulta!!! Nao e possivel excluir");
                 }else {
                     pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(listaPaciente.get(i), PacienteResponseDTO.class);
-                    pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(
-                            listaPaciente.get(i).getProprietario()));
+                    pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(
+                            listaPaciente.get(i).getProprietario(), ProprietarioDTO.class));
                     listaPaciente.remove(listaPaciente.get(i));
                 }
             }
