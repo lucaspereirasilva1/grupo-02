@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 
 public class MedicoServiceTest {
 
-    MedicoDTO mockMedicoDTO = new MedicoDTO();
+    MedicoDTO medicoDTO = new MedicoDTO();
     MedicoDAO mockMedicoDAO = mock(MedicoDAO.class);
     MedicoService mockMedicoService = new MedicoService(mockMedicoDAO);
 
@@ -24,15 +24,14 @@ public class MedicoServiceTest {
     void cadastrarMedicoTest() {
         MedicoService.getListaMedico().clear();
 
-        mockMedicoDTO.setCpf("98765432198");
-        mockMedicoDTO.setNome("Jhony");
-        mockMedicoDTO.setSobrenome("Zuim");
-        mockMedicoDTO.setRegistro("CRM8765");
-        mockMedicoDTO.setEspecialidade("Clinico geral");
+        medicoDTO.setCpf("98765432198");
+        medicoDTO.setNome("Jhony");
+        medicoDTO.setSobrenome("Zuim");
+        medicoDTO.setRegistro("CRM8765");
+        medicoDTO.setEspecialidade("Clinico geral");
 
         doNothing().when(mockMedicoDAO).inserir(anyList());
-
-        mockMedicoService.cadastrar(mockMedicoDTO);
+        mockMedicoService.cadastrar(medicoDTO);
 
         assertFalse(MedicoService.getListaMedico().isEmpty());
 
@@ -42,7 +41,7 @@ public class MedicoServiceTest {
         MedicoService.getListaMedico().clear();
 
         ValidaEntradaException exception = assertThrows(ValidaEntradaException.class, ()->{
-            mockMedicoService.validar(mockMedicoDTO);
+            mockMedicoService.validar(medicoDTO);
         });
 
         String expectedMessage1 = "Por favor preencher todos os campos";
@@ -55,20 +54,28 @@ public class MedicoServiceTest {
     @Test
     void editarMedicoTest() {
         MedicoService.getListaMedico().clear();
+        boolean editou = false;
 
         Medico medico = new Medico(1, "98765432198", "Jose", "Zuim", "CRM8765", "Clinico Geral");
         MedicoService.getListaMedico().add(medico);
 
-        mockMedicoDTO.setCpf("11987654321");
-        mockMedicoDTO.setNome("Raul");
-        mockMedicoDTO.setSobrenome("Seixas");
-        mockMedicoDTO.setRegistro("CRM123");
-        mockMedicoDTO.setEspecialidade("Ortopedista");
+        medicoDTO.setCpf("11987654321");
+        medicoDTO.setNome("Raul");
+        medicoDTO.setSobrenome("Seixas");
+        medicoDTO.setRegistro("CRM123");
+        medicoDTO.setEspecialidade("Ortopedista");
 
         doNothing().when(mockMedicoDAO).inserir(anyList());
-        mockMedicoService.editar(mockMedicoDTO, 1);
+        mockMedicoService.editar(medicoDTO, 1);
 
-        assertNotNull(mockMedicoDTO);
+        for (Medico m: MedicoService.getListaMedico()){
+            if (m.getRegistro().equals("CRM123")){
+                editou = true;
+                break;
+            }
+        }
+
+        assertTrue(editou);
     }
 
     @Test
@@ -83,22 +90,33 @@ public class MedicoServiceTest {
         doNothing().when(mockMedicoDAO).inserir(anyList());
         mockMedicoService.removerMedico(1);
 
-        assertTrue(MedicoService.getListaMedico().isEmpty());
+        boolean excluiu=true;
+        for (Medico m: MedicoService.getListaMedico()) {
+            if (m.getId().equals(1)) {
+                excluiu = false;
+                break;
+            }
+        }
+        assertTrue(excluiu);
     }
 
     @Test
     void buscarMedicoTest() {
 
         ProprietarioService.getListaProprietario().clear();
+        boolean buscou = false;
 
-        Medico medico = new Medico(1, "98765432198", "Joao", "Zuim", "CRM1", "Clinico Geral");
-        MedicoService.getListaMedico().add(medico);
+        Medico medico1 = new Medico(1, "98765432198", "Joao", "Zuim", "CRM2", "Clinico Geral");
+        MedicoService.getListaMedico().add(medico1);
 
         doNothing().when(mockMedicoDAO).inserir(anyList());
-        mockMedicoService.buscaMedico("CRM1");
+        Medico medico = mockMedicoService.buscaMedico("CRM2");
 
-        // Teste em construcao
-        // colocar o assert correto
+        if (medico.getRegistro() == "CRM2"){
+            buscou = true;
+        }
+
+        assertTrue(buscou);
 
     }
 
@@ -142,5 +160,4 @@ public class MedicoServiceTest {
 
         assertFalse(variavel);
     }
-
 }
