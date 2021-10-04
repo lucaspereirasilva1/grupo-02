@@ -8,7 +8,6 @@ import br.com.meli.desafiospring.model.entity.Proprietario;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -18,62 +17,54 @@ import java.util.Optional;
 
 @Service
 public class ProprietarioService {
-    private final ModelMapper modelMapper = new ModelMapper();
     @Getter
     private static final List<Proprietario> listaProprietario = new ArrayList<>();
     private ProprietarioDAO proprietarioDAO;
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
 
-    public ProprietarioService(ProprietarioDAO proprietarioDAO){
+    public ProprietarioService(ProprietarioDAO proprietarioDAO) {
         this.proprietarioDAO = proprietarioDAO;
     }
 
-    public ProprietarioService() {
 
-    }
-
-    public Integer cadastrar(ProprietarioDTO proprietarioDTO){
+    public Integer cadastrar(ProprietarioDTO proprietarioDTO) {
         Proprietario proprietario = (Proprietario) convesorUtil.conveterDTO(proprietarioDTO, Proprietario.class);
-        int tamanho;
-        if(listaProprietario.isEmpty())
-            tamanho=0;
-        else
-            tamanho=listaProprietario.size()+1;
+        int tamanho=0;
+        if (!listaProprietario.isEmpty())
+            tamanho = listaProprietario.size() + 1;
 
-        for(Proprietario p:listaProprietario) {tamanho=(p.getId());}
+        for (Proprietario p : listaProprietario) {
+            tamanho = (p.getId());
+        }
         proprietario.setId(tamanho + 1);
         listaProprietario.add(proprietario);
         proprietarioDAO.inserir(listaProprietario);
-        return proprietario.getId();    }
+        return proprietario.getId();
+    }
 
     public void validaEntradaProprietario(ProprietarioDTO proprietarioDTO) {
-       if (validaGenerico("CPF",proprietarioDTO.getCpf())) {
-           proprietarioDTO.setCpf(FormatdorUtil.formatarCPF(proprietarioDTO.getCpf()));
-           for(int i=0; i < listaProprietario.size(); i++) {
-                if (listaProprietario.get(i).getCpf().equals(proprietarioDTO.getCpf())) {
+        if (validaGenerico("CPF", proprietarioDTO.getCpf())) {
+            String cpf = FormatdorUtil.formatarCPF(proprietarioDTO.getCpf());
+            for (int i = 0; i < listaProprietario.size(); i++) {
+                if (listaProprietario.get(i).getCpf().equals(cpf)) {
                     throw new ValidaEntradaException("Proprietario ja existente!");
                 }
             }
         }
-        validaGenerico("Nome",proprietarioDTO.getNome());
-        validaGenerico("Sobrenome",proprietarioDTO.getSobreNome());
-        validaGenerico("Data Nascimento",proprietarioDTO.getDataNascimento());
-        validaGenerico("Endereço",proprietarioDTO.getEndereco());
-        validaGenerico("Telefone",proprietarioDTO.getTelefone());
-    }
+        validaGenerico("Nome", proprietarioDTO.getNome());
+        validaGenerico("Sobrenome", proprietarioDTO.getSobreNome());
+        validaGenerico("Data Nascimento", proprietarioDTO.getDataNascimento());
+        validaGenerico("Endereço", proprietarioDTO.getEndereco());
+        validaGenerico("Telefone", proprietarioDTO.getTelefone()); }
 
-    public boolean validaGenerico(String tipo,Object generico) {
-        if (ObjectUtils.isEmpty(generico)) {
-            throw new ValidaEntradaException(tipo+" nao informando!!! Por gentileza informar.");
+    public boolean validaGenerico(String tipo, Object generico) {
+        if (((tipo.equals("Telefone"))&&(Integer.parseInt(generico.toString())==0))||(ObjectUtils.isEmpty(generico))) {
+            throw new ValidaEntradaException(tipo + " nao informando!!! Por gentileza informar.");
         }else {
             return true;
         }
     }
 
-
-    public ProprietarioDTO converteProprietarioDTO(Proprietario proprietario) {
-        return modelMapper.map(proprietario, ProprietarioDTO.class);
-    }
     public ProprietarioDTO editar(ProprietarioDTO proprietarioDTO, Integer id) {
         Optional<Proprietario> optionalProprietario = listaProprietario.stream()
                 .filter(c -> c.getId().equals(id))
@@ -115,6 +106,6 @@ public class ProprietarioService {
         for (Consulta c : ConsultaService.getListaConsulta())
             if (c.getPaciente().getProprietario().equals(proprietario))
                 return true;
-            return false;
+        return false;
     }
 }
