@@ -4,11 +4,12 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.PacienteDAO;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
-import br.com.meli.desafiospring.model.entity.Paciente;
-import br.com.meli.desafiospring.model.entity.Proprietario;
+import br.com.meli.desafiospring.model.entity.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -215,10 +216,63 @@ public class PacienteServiceTest {
 
     @Test
     void remover() {
+        doNothing().when(mockPacienteDAO).inserir(anyList());
+        pacienteService.remover(1);
+        Optional<Paciente> pacienteOptional = PacienteService.getListaPaciente().stream()
+                .filter(p -> p.getId() == 1)
+                .findAny();
+        assertTrue(pacienteOptional.isEmpty());
     }
 
     @Test
-    void verificarConsulta() {
+    void verificarConsultaExistente() {
+        boolean verifica = false;
+        ConsultaService.getListaConsulta().clear();
+        Medico medico = new Medico(1, "11111111111", "zero"
+                , "um", "CRM1", "pediatra");
+
+        Paciente paciente = new Paciente(PacienteService.getListaPaciente().size() + 1,"mamifero"
+                , "baleia", "preto", LocalDate.now()
+                ,"tres", new Proprietario(1, "11111111111"
+                                                , "ed", "nobre", LocalDate.now()
+                                                , "rua zero", 1111111111L));
+        IConsulta consulta = new Consulta().comId(1)
+                .comMotivo("rotina")
+                .comDiagnostico("a realizar")
+                .comTratamento("a realizar")
+                .comMedico(medico)
+                .noPeriodo(LocalDateTime.now())
+                .comPaciente(paciente);
+        ConsultaService.getListaConsulta().add((Consulta) consulta);
+
+        Optional<Consulta> consultaOptional = ConsultaService.getListaConsulta().stream()
+                .filter(c -> c.getPaciente().equals(paciente))
+                .findAny();
+        if (pacienteService.verificarConsulta(paciente)) {
+            verifica = consultaOptional.isPresent();
+        }
+
+        assertTrue(verifica);
+    }
+
+    @Test
+    void verificarConsultaNaoExistente() {
+        boolean verifica = false;
+        ConsultaService.getListaConsulta().clear();
+        Paciente paciente = new Paciente(PacienteService.getListaPaciente().size() + 1,"mamifero"
+                , "baleia", "preto", LocalDate.now()
+                ,"tres", new Proprietario(1, "11111111111"
+                , "ed", "nobre", LocalDate.now()
+                , "rua zero", 1111111111L));
+
+        Optional<Consulta> consultaOptional = ConsultaService.getListaConsulta().stream()
+                .filter(c -> c.getPaciente().equals(paciente))
+                .findAny();
+        if (!pacienteService.verificarConsulta(paciente)) {
+            verifica = consultaOptional.isEmpty();
+        }
+
+        assertTrue(verifica);
     }
 
     @Test
@@ -234,10 +288,10 @@ public class PacienteServiceTest {
         Paciente paciente1 = new Paciente(1,"canina", "dalmata"
                 , "preto", LocalDate.now()
                 ,"um", proprietario1);
-        Paciente paciente2 = new Paciente(1,"felina", "leao"
+        Paciente paciente2 = new Paciente(2,"felina", "leao"
                 , "amarelo", LocalDate.now()
                 ,"dois", proprietario2);
-        Paciente paciente3 = new Paciente(1,"mamifero", "baleia"
+        Paciente paciente3 = new Paciente(3,"mamifero", "baleia"
                 , "preto", LocalDate.now()
                 ,"tres", proprietario3);
 
