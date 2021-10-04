@@ -1,9 +1,7 @@
 package br.com.meli.desafiospring.model.service;
 
 import br.com.meli.desafiospring.exception.ValidaEntradaException;
-import br.com.meli.desafiospring.model.dao.ConsultaDAO;
 import br.com.meli.desafiospring.model.dao.ProprietarioDAO;
-import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.*;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 public class ProprietarioServiceTest {
-    ConsultaDAO mockConsultaDAO = mock(ConsultaDAO.class);
     ProprietarioDTO proprietarioDTO = new ProprietarioDTO();
     ProprietarioDAO mockProprietarioDAO = mock(ProprietarioDAO.class);
     ProprietarioService proprietarioService = new ProprietarioService(mockProprietarioDAO);
@@ -47,7 +44,6 @@ public class ProprietarioServiceTest {
 
     @Test
     void validarCpfVazioTest() {
-   //     proprietarioDTO.setCpf("222.222.222-22");
         proprietarioDTO.setNome("ed");
         proprietarioDTO.setSobreNome("NobreMix");
         proprietarioDTO.setDataNascimento(LocalDate.now());
@@ -64,7 +60,7 @@ public class ProprietarioServiceTest {
 
     @Test
     void validarCpfRepetidoTest() {
-        Proprietario proprietario = new Proprietario(1, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario = new Proprietario(1, "222.222.222-22", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
         ProprietarioService.getListaProprietario().add(proprietario);
 
         proprietarioDTO.setCpf("22222222222");
@@ -86,7 +82,7 @@ public class ProprietarioServiceTest {
     @Test
     void validarNomeVazioTest() {
         proprietarioDTO.setCpf("222.222.222-22");
- //       proprietarioDTO.setNome("ed");
+        //       proprietarioDTO.setNome("ed");
         proprietarioDTO.setSobreNome("NobreMix");
         proprietarioDTO.setDataNascimento(LocalDate.now());
         proprietarioDTO.setEndereco("Rua X34");
@@ -104,7 +100,6 @@ public class ProprietarioServiceTest {
     void validarSobrenomeVazioTest() {
         proprietarioDTO.setCpf("222.222.222-22");
         proprietarioDTO.setNome("ed");
- //       proprietarioDTO.setSobreNome("NobreMix");
         proprietarioDTO.setDataNascimento(LocalDate.now());
         proprietarioDTO.setEndereco("Rua X34");
         proprietarioDTO.setTelefone(98798798798L);
@@ -122,7 +117,6 @@ public class ProprietarioServiceTest {
         proprietarioDTO.setCpf("222.222.222-22");
         proprietarioDTO.setNome("ed");
         proprietarioDTO.setSobreNome("NobreMix");
- //       proprietarioDTO.setDataNascimento(LocalDate.now());
         proprietarioDTO.setEndereco("Rua X34");
         proprietarioDTO.setTelefone(98798798798L);
         ValidaEntradaException validaEntradaException = assertThrows
@@ -140,12 +134,26 @@ public class ProprietarioServiceTest {
         proprietarioDTO.setNome("ed");
         proprietarioDTO.setSobreNome("NobreMix");
         proprietarioDTO.setDataNascimento(LocalDate.now());
- //       proprietarioDTO.setEndereco("Rua X34");
         proprietarioDTO.setTelefone(98798798798L);
         ValidaEntradaException validaEntradaException = assertThrows
                 (ValidaEntradaException.class,() -> proprietarioService.validaEntradaProprietario(proprietarioDTO));
 
         String mensagemEsperada = "Endereço nao informando!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+    @Test
+    void validarTelefoneVazioTest() {
+        proprietarioDTO.setCpf("222.222.222-22");
+        proprietarioDTO.setNome("ed");
+        proprietarioDTO.setSobreNome("NobreMix");
+        proprietarioDTO.setDataNascimento(LocalDate.now());
+        proprietarioDTO.setEndereco("Rua X34");
+        ValidaEntradaException validaEntradaException = assertThrows
+                (ValidaEntradaException.class,() -> proprietarioService.validaEntradaProprietario(proprietarioDTO));
+
+        String mensagemEsperada = "Telefone nao informando!!! Por gentileza informar.";
         String mensagemRecebida = validaEntradaException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
@@ -187,7 +195,6 @@ public class ProprietarioServiceTest {
                 break;
             }
         }
-
         assertTrue(editou);
     }
 
@@ -213,11 +220,11 @@ public class ProprietarioServiceTest {
             }
         }
         assertTrue(excluiu);
-
     }
 
     @Test
     void buscarProprietarioTest(){
+        boolean buscou = false;
         ProprietarioService.getListaProprietario().clear();
         Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
         Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
@@ -228,9 +235,12 @@ public class ProprietarioServiceTest {
         ProprietarioService.getListaProprietario().add(proprietario3);
 
         doNothing().when(mockProprietarioDAO).inserir(anyList());
-        proprietarioService.buscarProprietario(1);
+        Proprietario proprietario = proprietarioService.buscarProprietario(1);
 
-        doNothing().when(mockProprietarioDAO).inserir(anyList());
+        if(proprietario.getId() == 1) {
+            buscou = true;
+        }
+        assertTrue(buscou);
     }
 
     @Test
@@ -309,8 +319,5 @@ public class ProprietarioServiceTest {
         String mensagemRecebida = validaEntradaException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
-
     }
-
-
 }
