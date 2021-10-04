@@ -357,8 +357,28 @@ public class PacienteServiceTest {
 
     @Test
     void listar() {
+        PacienteResponseDTO pacienteResponseDTO = new PacienteResponseDTO();
+        pacienteResponseDTO.setEspecie(PacienteService.getListaPaciente().get(0).getEspecie());
+        pacienteResponseDTO.setRaca(PacienteService.getListaPaciente().get(0).getRaca());
+        pacienteResponseDTO.setCor(PacienteService.getListaPaciente().get(0).getCor());
+        pacienteResponseDTO.setDataDeNascimento(PacienteService.getListaPaciente().get(0).getDataDeNascimento());
+        pacienteResponseDTO.setNome(PacienteService.getListaPaciente().get(0).getNome());
+
+        ProprietarioDTO proprietarioDTO = new ProprietarioDTO();
+        proprietarioDTO.setCpf(PacienteService.getListaPaciente().get(0).getProprietario().getCpf());
+        proprietarioDTO.setNome(PacienteService.getListaPaciente().get(0).getProprietario().getNome());
+        proprietarioDTO.setSobreNome(PacienteService.getListaPaciente().get(0).getProprietario().getSobreNome());
+        proprietarioDTO.setDataNascimento(PacienteService.getListaPaciente().get(0).getProprietario().getDataNascimento());
+        proprietarioDTO.setEndereco(PacienteService.getListaPaciente().get(0).getProprietario().getEndereco());
+        proprietarioDTO.setTelefone(PacienteService.getListaPaciente().get(0).getProprietario().getTelefone());
+
+        when((mockConversorUtil).conveterDTO(any(Paciente.class), any()))
+                .thenReturn(pacienteResponseDTO);
+        when((mockConversorUtil).conveterDTO(any(Proprietario.class), any()))
+                .thenReturn(proprietarioDTO);
         List<PacienteResponseDTO> listaPacienteResponseDTO = pacienteService.listar();
-        assertFalse(listaPacienteResponseDTO.isEmpty());
+        assertNotNull(listaPacienteResponseDTO);
+        assertEquals(PacienteService.getListaPaciente().size(), listaPacienteResponseDTO.size());
     }
 
     private void gerarMassaPaciente() {
