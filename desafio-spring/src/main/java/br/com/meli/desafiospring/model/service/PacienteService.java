@@ -119,7 +119,7 @@ public class PacienteService {
         List<PacienteResponseDTO> listaPacienteResponseDTO = new ArrayList<>();
         for (Paciente p: listaPaciente) {
             PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(p, PacienteResponseDTO.class);
-            pacienteResponseDTO.setProprietarioDTO(proprietarioService.converteProprietarioDTO(p.getProprietario()));
+            pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(p.getProprietario(), ProprietarioDTO.class));
             listaPacienteResponseDTO.add(pacienteResponseDTO);
         }
 
