@@ -1,6 +1,8 @@
 package br.com.meli.desafiospring.model.service;
 
+import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.PacienteDAO;
+import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.PacienteRequestDTO;
 import br.com.meli.desafiospring.model.entity.Paciente;
 import br.com.meli.desafiospring.model.entity.Proprietario;
@@ -8,11 +10,16 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 public class PacienteServiceTest {
+
+    PacienteDAO mockPacienteDAO = mock(PacienteDAO.class);
+    ProprietarioService mockProprietarioService = mock(ProprietarioService.class);
+    PacienteService pacienteService = new PacienteService(mockPacienteDAO, mockProprietarioService);
 
     public PacienteServiceTest() {
         gerarMassaPaciente();
@@ -21,9 +28,6 @@ public class PacienteServiceTest {
     @Test
     void cadastrar() {
         boolean cadastrou = false;
-        PacienteDAO mockPacienteDAO = mock(PacienteDAO.class);
-        ProprietarioService mockProprietarioService = mock(ProprietarioService.class);
-        PacienteService pacienteService = new PacienteService(mockPacienteDAO, mockProprietarioService);
 
         PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO("canina", "dalmata"
                 , "preto", LocalDate.now()
@@ -48,10 +52,6 @@ public class PacienteServiceTest {
     @Test
     void editar() {
         boolean editou = false;
-
-        PacienteDAO mockPacienteDAO = mock(PacienteDAO.class);
-        ProprietarioService mockProprietarioService = mock(ProprietarioService.class);
-        PacienteService pacienteService = new PacienteService(mockPacienteDAO, mockProprietarioService);
 
         PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO("inseto", "aranha"
                 , "marrom", LocalDate.now()
@@ -79,10 +79,138 @@ public class PacienteServiceTest {
 
     @Test
     void buscaPaciente() {
+        boolean buscou = false;
+        Paciente paciente = pacienteService.buscaPaciente(1);
+        if(paciente.getId() == 1) {
+            buscou = true;
+        }
+
+        assertTrue(buscou);
     }
 
     @Test
-    void validaEntrada() {
+    void validaEntradaCampoVazio() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Nenhum campo informado!!! Por gentileza informar: especie, raca, cor" +
+                ", data de nascimento e nome";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaProprietario() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+        pacienteRequestDTO.setNome("zero");
+        pacienteRequestDTO.setRaca("branco");
+        pacienteRequestDTO.setEspecie("tubarao");
+        pacienteRequestDTO.setDataDeNascimento(LocalDate.now());
+        pacienteRequestDTO.setCor("preto");
+
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Id proprietario nao informado!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaEspecie() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+        pacienteRequestDTO.setIdProprietario(1);
+        pacienteRequestDTO.setNome("zero");
+        pacienteRequestDTO.setRaca("branco");
+        pacienteRequestDTO.setDataDeNascimento(LocalDate.now());
+        pacienteRequestDTO.setCor("preto");
+
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Especie nao informada!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaRaca() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+        pacienteRequestDTO.setIdProprietario(1);
+        pacienteRequestDTO.setNome("zero");
+        pacienteRequestDTO.setDataDeNascimento(LocalDate.now());
+        pacienteRequestDTO.setEspecie("tubarao");
+        pacienteRequestDTO.setCor("preto");
+
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Raca nao informada!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaCor() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+        pacienteRequestDTO.setIdProprietario(1);
+        pacienteRequestDTO.setNome("zero");
+        pacienteRequestDTO.setDataDeNascimento(LocalDate.now());
+        pacienteRequestDTO.setEspecie("tubarao");
+        pacienteRequestDTO.setRaca("branco");
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Cor nao informada!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaDataNascimento() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+        pacienteRequestDTO.setIdProprietario(1);
+        pacienteRequestDTO.setNome("zero");
+        pacienteRequestDTO.setEspecie("tubarao");
+        pacienteRequestDTO.setRaca("branco");
+        pacienteRequestDTO.setCor("preto");
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Data de nascimento nao informada!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void validaEntradaDataNome() {
+        PacienteRequestDTO pacienteRequestDTO = new PacienteRequestDTO();
+        pacienteRequestDTO.setIdProprietario(1);
+        pacienteRequestDTO.setEspecie("tubarao");
+        pacienteRequestDTO.setRaca("branco");
+        pacienteRequestDTO.setCor("preto");
+        pacienteRequestDTO.setDataDeNascimento(LocalDate.now());
+
+        ValidaEntradaException validaEntradaException = assertThrows(ValidaEntradaException.class, () ->
+                pacienteService.validaEntrada(pacienteRequestDTO));
+
+        String mensagemEsperada = "Nome nao informado!!! Por gentileza informar.";
+        String mensagemRecebida = validaEntradaException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
     @Test
