@@ -26,10 +26,7 @@ public class ProprietarioService {
     @Getter
     private static final List<Proprietario> listaProprietario = new ArrayList<>();
     private ProprietarioDAO proprietarioDAO;
-    private final File file = new File("proprietarios.json");
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
-    private final ArquivoUtil<Proprietario> arquivoUtil = new ArquivoUtil<>();
-    private static final Logger logger = Logger.getLogger(ProprietarioService.class);
 
     public ProprietarioService(ProprietarioDAO proprietarioDAO){
         this.proprietarioDAO = proprietarioDAO;
@@ -111,7 +108,7 @@ public class ProprietarioService {
 
         return propritarioDTO;
     }
-    public static Proprietario buscarProprietario(Integer id) {
+    public Proprietario buscarProprietario(Integer id) {
         Optional<Proprietario> optionalProprietario = listaProprietario.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst();
