@@ -25,4 +25,9 @@ public class ConsultaDAO implements IPersistir<Consulta> {
             logger.error(e);
         }
     }
+
+    @Override
+    public void salva(Consulta objeto) {
+
+    }
 }

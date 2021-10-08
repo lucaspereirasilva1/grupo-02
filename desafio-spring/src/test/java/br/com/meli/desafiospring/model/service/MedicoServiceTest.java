@@ -4,6 +4,7 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.MedicoDAO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.*;
+import br.com.meli.desafiospring.model.repository.MedicoRepository;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -18,7 +19,8 @@ public class MedicoServiceTest {
 
     MedicoDTO medicoDTO = new MedicoDTO();
     MedicoDAO mockMedicoDAO = mock(MedicoDAO.class);
-    MedicoService mockMedicoService = new MedicoService(mockMedicoDAO);
+    MedicoRepository medicoRepository = mock(MedicoRepository.class);
+    MedicoService mockMedicoService = new MedicoService(mockMedicoDAO,medicoRepository);
 
     @Test
     void cadastrarMedicoTest() {
@@ -92,7 +94,7 @@ public class MedicoServiceTest {
 
         boolean excluiu=true;
         for (Medico m: MedicoService.getListaMedico()) {
-            if (m.getId().equals(1)) {
+            if (m.getId() == (1)) {
                 excluiu = false;
                 break;
             }

@@ -25,4 +25,9 @@ public class ProprietarioDAO implements IPersistir<Proprietario>{
             logger.error(e);
         }
     }
+
+    @Override
+    public void salva(Proprietario objeto) {
+
+    }
 }

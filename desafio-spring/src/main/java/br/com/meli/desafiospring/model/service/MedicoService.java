@@ -5,6 +5,7 @@ import br.com.meli.desafiospring.model.dao.MedicoDAO;
 import br.com.meli.desafiospring.model.dto.MedicoDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Medico;
+import br.com.meli.desafiospring.model.repository.MedicoRepository;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
@@ -19,19 +20,21 @@ public class MedicoService {
 
     @Getter
     private static final List<Medico> listaMedico = new ArrayList<>();
-    private MedicoDAO medicoDAO;
+    private final MedicoDAO medicoDAO;
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
+    private final MedicoRepository medicoRepository;
 
-    public MedicoService(MedicoDAO medicoDAO){
+    public MedicoService(MedicoDAO medicoDAO, MedicoRepository medicoRepository){
         this.medicoDAO = medicoDAO;
+        this.medicoRepository = medicoRepository;
     }
 
     public Integer cadastrar(MedicoDTO medicoDTO){
         Medico medico = (Medico) convesorUtil.conveterDTO(medicoDTO, Medico.class);
         medico.setCpf(FormatdorUtil.formatarCPF(medicoDTO.getCpf()));
-        medico.setId(listaMedico.size() + 1);
         listaMedico.add(medico);
         medicoDAO.inserir(listaMedico);
+        medicoRepository.save(medico);
         return medico.getId();
     }
     public void validar(MedicoDTO medicoDTO){
@@ -51,11 +54,11 @@ public class MedicoService {
                 .findFirst();
         Medico medico = optionalMedico.orElse(null);
         assert medico != null;
-        medico.setCpf(medicoDTO.getCpf());
-        medico.setNome(medicoDTO.getNome());
-        medico.setSobrenome(medicoDTO.getSobrenome());
-        medico.setRegistro(medicoDTO.getRegistro());
-        medico.setEspecialidade(medicoDTO.getEspecialidade());
+        medico.comCPF(medicoDTO.getCpf());
+        medico.comNome(medicoDTO.getNome());
+        medico.comSobreNome(medicoDTO.getSobrenome());
+        medico.comRegistro(medicoDTO.getRegistro());
+        medico.paraEspecialidade(medicoDTO.getEspecialidade());
         medicoDAO.inserir(listaMedico);
         return (MedicoDTO) convesorUtil.conveterDTO(medico, MedicoDTO.class);
     }
