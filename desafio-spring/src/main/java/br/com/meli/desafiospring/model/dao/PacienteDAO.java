@@ -25,4 +25,9 @@ public class PacienteDAO implements IPersistir<Paciente>{
             logger.error(e);
         }
     }
+
+    @Override
+    public void salva(Paciente objeto) {
+
+    }
 }

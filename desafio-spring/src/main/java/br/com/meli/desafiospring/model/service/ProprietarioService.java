@@ -70,6 +70,7 @@ public class ProprietarioService {
                 .filter(c -> c.getId().equals(id))
                 .findFirst();
         Proprietario proprietario = optionalProprietario.orElse(null);
+        Proprietario proprietario1 = new Proprietario();
         assert proprietario != null;
         proprietario.setCpf(proprietarioDTO.getCpf());
         proprietario.setNome(proprietarioDTO.getNome());

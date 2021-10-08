@@ -5,5 +5,6 @@ import java.util.List;
 public interface IPersistir<T> {
 
     void inserir(List<T> lista);
+    void salva(T objeto);
 
 }
