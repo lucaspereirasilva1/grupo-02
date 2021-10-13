@@ -8,5 +8,6 @@ public interface IMedico {
     IMedico comSobreNome(String sobreNome);
     IMedico comRegistro(String registro);
     IMedico paraEspecialidade(String especialidade);
+    Medico build();
 
 }

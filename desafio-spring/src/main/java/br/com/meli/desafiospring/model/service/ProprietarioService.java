@@ -5,6 +5,7 @@ import br.com.meli.desafiospring.model.dao.ProprietarioDAO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Proprietario;
+import br.com.meli.desafiospring.model.repository.ProprietarioRepository;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import br.com.meli.desafiospring.util.FormatdorUtil;
 import lombok.Getter;
@@ -17,26 +18,29 @@ import java.util.Optional;
 
 @Service
 public class ProprietarioService {
+
     @Getter
     private static final List<Proprietario> listaProprietario = new ArrayList<>();
     private ProprietarioDAO proprietarioDAO;
     private final ConvesorUtil convesorUtil = new ConvesorUtil();
+    private final ProprietarioRepository proprietarioRepository;
 
-    public ProprietarioService(ProprietarioDAO proprietarioDAO) {
+    public ProprietarioService(ProprietarioDAO proprietarioDAO, ProprietarioRepository proprietarioRepository) {
         this.proprietarioDAO = proprietarioDAO;
+        this.proprietarioRepository = proprietarioRepository;
     }
 
 
     public Integer cadastrar(ProprietarioDTO proprietarioDTO) {
         Proprietario proprietario = (Proprietario) convesorUtil.conveterDTO(proprietarioDTO, Proprietario.class);
-        int tamanho=0;
-        if (!listaProprietario.isEmpty())
-            tamanho = listaProprietario.size() + 1;
-
-        for (Proprietario p : listaProprietario) {
-            tamanho = (p.getId());
-        }
-        proprietario.setId(tamanho + 1);
+//        int tamanho=0;
+//        if (!listaProprietario.isEmpty())
+//            tamanho = listaProprietario.size() + 1;
+//
+//        for (Proprietario p : listaProprietario) {
+//            tamanho = (p.getId());
+//        }
+////        proprietario.setId(tamanho + 1);
         listaProprietario.add(proprietario);
         proprietarioDAO.inserir(listaProprietario);
         return proprietario.getId();
@@ -97,10 +101,16 @@ public class ProprietarioService {
         return propritarioDTO;
     }
     public Proprietario buscarProprietario(Integer id) {
-        Optional<Proprietario> optionalProprietario = listaProprietario.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
-        return optionalProprietario.orElse(null);
+//        Optional<Proprietario> optionalProprietario = listaProprietario.stream()
+//                .filter(c -> c.getId().equals(id))
+//                .findFirst();
+//        return optionalProprietario.orElse(null);
+        Optional<Proprietario> proprietario = proprietarioRepository.findById(id);
+        if (proprietario.isPresent()) {
+            return proprietario.get();
+        } else {
+            throw new ValidaEntradaException("Propritario inexistente, por gentileza enviar um valido!!!");
+        }
     }
 
     public static boolean verificarConsulta(Proprietario proprietario) {

@@ -1,20 +1,41 @@
 package br.com.meli.desafiospring.model.entity;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@ToString
+@Data
+@NoArgsConstructor
+@Entity
+@Table(name = "consulta")
 public class Consulta implements IConsulta{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "datahora")
     private LocalDateTime dataHora;
+
+    @Column(name = "motivo")
     private String motivo;
+
+    @Column(name = "diagnostico")
     private String diagnostico;
+
+    @Column(name = "tratamento")
     private String tratamento;
+
+    @ManyToOne
+    @JoinColumn(name = "medico_id")
+    @ToString.Exclude
     private Medico medico;
+
+    @ManyToOne
+    @JoinColumn(name = "paciente_id")
+    @ToString.Exclude
     private Paciente paciente;
 
     @Override
@@ -59,4 +80,9 @@ public class Consulta implements IConsulta{
         return this;
     }
 
+    @Override
+    public Consulta build() {
+        return this;
     }
+
+}

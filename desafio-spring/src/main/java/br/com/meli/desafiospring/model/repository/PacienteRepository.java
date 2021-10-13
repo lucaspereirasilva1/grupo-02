@@ -1,12 +1,9 @@
 package br.com.meli.desafiospring.model.repository;
 
-import br.com.meli.desafiospring.model.entity.Medico;
+import br.com.meli.desafiospring.model.entity.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MedicoRepository extends JpaRepository<Medico, Integer> {
-
-    Medico findByRegistro(String registro);
-
+public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
 }

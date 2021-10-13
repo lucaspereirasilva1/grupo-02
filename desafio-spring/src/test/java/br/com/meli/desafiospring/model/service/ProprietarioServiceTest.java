@@ -4,6 +4,7 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.ProprietarioDAO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.*;
+import br.com.meli.desafiospring.model.repository.ProprietarioRepository;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -17,7 +18,8 @@ import static org.mockito.Mockito.mock;
 public class ProprietarioServiceTest {
     ProprietarioDTO proprietarioDTO = new ProprietarioDTO();
     ProprietarioDAO mockProprietarioDAO = mock(ProprietarioDAO.class);
-    ProprietarioService proprietarioService = new ProprietarioService(mockProprietarioDAO);
+    ProprietarioRepository proprietarioRepository = mock(ProprietarioRepository.class);
+    ProprietarioService proprietarioService = new ProprietarioService(mockProprietarioDAO, proprietarioRepository);
     @Test
     void cadastrarProprietarioTest() {
         boolean cadastrou = false;
@@ -41,7 +43,6 @@ public class ProprietarioServiceTest {
         assertTrue(cadastrou);
     }
 
-
     @Test
     void validarCpfVazioTest() {
         proprietarioDTO.setNome("ed");
@@ -60,7 +61,15 @@ public class ProprietarioServiceTest {
 
     @Test
     void validarCpfRepetidoTest() {
-        Proprietario proprietario = new Proprietario(1, "222.222.222-22", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario = new Proprietario()
+                .comId(1)
+                .comCpf("222.222.222-22")
+                .comNome("Ed2")
+                .comSobreNome("oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
         ProprietarioService.getListaProprietario().add(proprietario);
 
         proprietarioDTO.setCpf("22222222222");
@@ -164,10 +173,42 @@ public class ProprietarioServiceTest {
         ProprietarioService.getListaProprietario().clear();
         boolean editou = false;
 
-        Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario3 = new Proprietario(3, "33333333333", "Ed3", "Nobre", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario4 = new Proprietario(4, "44444444444", "Ed4", "Oliveira", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario1 = new Proprietario()
+                .comId(1)
+                .comCpf("11111111111")
+                .comNome("Ed1")
+                .comSobreNome("Mix")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario2 = new Proprietario()
+                .comId(2)
+                .comCpf("22222222222")
+                .comNome("Ed2")
+                .comSobreNome("oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario3 = new Proprietario()
+                .comId(3)
+                .comCpf("33333333333")
+                .comNome("Ed3")
+                .comSobreNome("Nobre")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario4 = new Proprietario()
+                .comId(4)
+                .comCpf("44444444444")
+                .comNome("Ed3")
+                .comSobreNome("Oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
 
         ProprietarioService.getListaProprietario().add(proprietario1);
         ProprietarioService.getListaProprietario().add(proprietario2);
@@ -200,9 +241,33 @@ public class ProprietarioServiceTest {
 
     @Test void excluirProprietarioTest(){
         ProprietarioService.getListaProprietario().clear();
-        Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario3 = new Proprietario(3, "33333333333", "Ed3", "Nobre", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario1 = new Proprietario()
+                .comId(1)
+                .comCpf("11111111111")
+                .comNome("Ed1")
+                .comSobreNome("Mix")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario2 = new Proprietario()
+                .comId(2)
+                .comCpf("22222222222")
+                .comNome("Ed2")
+                .comSobreNome("oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario3 = new Proprietario()
+                .comId(3)
+                .comCpf("33333333333")
+                .comNome("Ed3")
+                .comSobreNome("Nobre")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
 
         ProprietarioService.getListaProprietario().add(proprietario1);
         ProprietarioService.getListaProprietario().add(proprietario2);
@@ -226,9 +291,33 @@ public class ProprietarioServiceTest {
     void buscarProprietarioTest(){
         boolean buscou = false;
         ProprietarioService.getListaProprietario().clear();
-        Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario3 = new Proprietario(3, "33333333333", "Ed3", "Nobre", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario1 = new Proprietario()
+                .comId(1)
+                .comCpf("11111111111")
+                .comNome("Ed1")
+                .comSobreNome("Mix")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario2 = new Proprietario()
+                .comId(2)
+                .comCpf("22222222222")
+                .comNome("Ed2")
+                .comSobreNome("oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario3 = new Proprietario()
+                .comId(3)
+                .comCpf("33333333333")
+                .comNome("Ed3")
+                .comSobreNome("Nobre")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
 
         ProprietarioService.getListaProprietario().add(proprietario1);
         ProprietarioService.getListaProprietario().add(proprietario2);
@@ -247,9 +336,33 @@ public class ProprietarioServiceTest {
     void verificarConsultaTest(){
         ProprietarioService.getListaProprietario().clear();
 
-        Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario3 = new Proprietario(3, "33333333333", "Ed3", "Nobre", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario1 = new Proprietario()
+                .comId(1)
+                .comCpf("11111111111")
+                .comNome("Ed1")
+                .comSobreNome("Mix")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario2 = new Proprietario()
+                .comId(2)
+                .comCpf("22222222222")
+                .comNome("Ed2")
+                .comSobreNome("oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario3 = new Proprietario()
+                .comId(3)
+                .comCpf("33333333333")
+                .comNome("Ed3")
+                .comSobreNome("Nobre")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
         ProprietarioService.getListaProprietario().add(proprietario1);
         ProprietarioService.getListaProprietario().add(proprietario2);
         ProprietarioService.getListaProprietario().add(proprietario3);
@@ -257,20 +370,35 @@ public class ProprietarioServiceTest {
         ConsultaService.getListaConsulta().clear();
         MedicoService.getListaMedico().clear();
 
-        Medico medico = new Medico(1, "11111111111", "zero", "um", "CRM1", "pediatra");
+        Medico medico = new Medico()
+                .comId(1)
+                .comCPF("11111111111")
+                .comNome("zero")
+                .comSobreNome("um")
+                .comRegistro("CRM1")
+                .paraEspecialidade("pediatra")
+                .build();
         MedicoService.getListaMedico().add(medico);
 
         LocalDateTime dataHora = LocalDateTime.of(2021, 11, 30, 12, 1);
 
-        IConsulta consulta = new Consulta().comId(1)
+        Consulta consulta = new Consulta().comId(1)
                 .comMotivo("rotina")
                 .comDiagnostico("a realizar")
                 .comTratamento("a realizar")
                 .comMedico(medico)
                 .noPeriodo(dataHora)
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        ,proprietario1));
-        ConsultaService.getListaConsulta().add((Consulta) consulta);
+                .comPaciente(new Paciente()
+                        .comId(1)
+                        .comEspecie("cao")
+                        .comRaca("dalmata")
+                        .comCor("preto")
+                        .comDataDeNascimento(LocalDate.now())
+                        .comNome("zero")
+                        .comProprietario(proprietario1)
+                        .build())
+                .build();
+        ConsultaService.getListaConsulta().add(consulta);
 
 
         doNothing().when(mockProprietarioDAO).inserir(anyList());
@@ -284,9 +412,33 @@ public class ProprietarioServiceTest {
     void excluirProprietarioComConsultaTest(){
         ProprietarioService.getListaProprietario().clear();
 
-        Proprietario proprietario1 = new Proprietario(1, "11111111111", "Ed1", "Mix", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario2 = new Proprietario(2, "22222222222", "Ed2", "oliveira", LocalDate.now(), "Rua X34", 98798798798L);
-        Proprietario proprietario3 = new Proprietario(3, "33333333333", "Ed3", "Nobre", LocalDate.now(), "Rua X34", 98798798798L);
+        Proprietario proprietario1 = new Proprietario()
+                .comId(1)
+                .comCpf("11111111111")
+                .comNome("Ed1")
+                .comSobreNome("Mix")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario2 = new Proprietario()
+                .comId(2)
+                .comCpf("22222222222")
+                .comNome("Ed2")
+                .comSobreNome("oliveira")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
+        Proprietario proprietario3 = new Proprietario()
+                .comId(3)
+                .comCpf("33333333333")
+                .comNome("Ed3")
+                .comSobreNome("Nobre")
+                .comDataDeNascimento(LocalDate.now())
+                .comEndereco("Rua X34")
+                .comTelefone(98798798798L)
+                .build();
         ProprietarioService.getListaProprietario().add(proprietario1);
         ProprietarioService.getListaProprietario().add(proprietario2);
         ProprietarioService.getListaProprietario().add(proprietario3);
@@ -294,20 +446,35 @@ public class ProprietarioServiceTest {
         ConsultaService.getListaConsulta().clear();
         MedicoService.getListaMedico().clear();
 
-        Medico medico = new Medico(1, "11111111111", "zero", "um", "CRM1", "pediatra");
+        Medico medico = new Medico()
+                .comId(1)
+                .comCPF("11111111111")
+                .comNome("zero")
+                .comSobreNome("um")
+                .comRegistro("CRM1")
+                .paraEspecialidade("pediatra")
+                .build();
         MedicoService.getListaMedico().add(medico);
 
         LocalDateTime dataHora = LocalDateTime.of(2021, 11, 30, 12, 1);
 
-        IConsulta consulta = new Consulta().comId(1)
+        Consulta consulta = new Consulta().comId(1)
                 .comMotivo("rotina")
                 .comDiagnostico("a realizar")
                 .comTratamento("a realizar")
                 .comMedico(medico)
                 .noPeriodo(dataHora)
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        ,proprietario1));
-        ConsultaService.getListaConsulta().add((Consulta) consulta);
+                .comPaciente(new Paciente()
+                        .comId(1)
+                        .comEspecie("cao")
+                        .comRaca("dalmata")
+                        .comCor("preto")
+                        .comDataDeNascimento(LocalDate.now())
+                        .comNome("zero")
+                        .comProprietario(proprietario1)
+                        .build())
+                .build();
+        ConsultaService.getListaConsulta().add(consulta);
 
 
         doNothing().when(mockProprietarioDAO).inserir(anyList());
