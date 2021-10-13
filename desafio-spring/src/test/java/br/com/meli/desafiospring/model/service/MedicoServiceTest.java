@@ -42,9 +42,7 @@ public class MedicoServiceTest {
     void validarMedicoTest() {
         MedicoService.getListaMedico().clear();
 
-        ValidaEntradaException exception = assertThrows(ValidaEntradaException.class, ()->{
-            mockMedicoService.validar(medicoDTO);
-        });
+        ValidaEntradaException exception = assertThrows(ValidaEntradaException.class, ()-> mockMedicoService.validar(medicoDTO));
 
         String expectedMessage1 = "Por favor preencher todos os campos";
         String actualMessage1 = exception.getMessage();
@@ -58,7 +56,14 @@ public class MedicoServiceTest {
         MedicoService.getListaMedico().clear();
         boolean editou = false;
 
-        Medico medico = new Medico(1, "98765432198", "Jose", "Zuim", "CRM8765", "Clinico Geral");
+        Medico medico = new Medico()
+                .comId(1)
+                .comCPF("98765432198")
+                .comNome("Jose")
+                .comSobreNome("Zuim")
+                .comRegistro("CRM8765")
+                .paraEspecialidade("Clinico Geral")
+                .build();
         MedicoService.getListaMedico().add(medico);
 
         medicoDTO.setCpf("11987654321");
@@ -86,7 +91,14 @@ public class MedicoServiceTest {
         List<Consulta> listConsulta = ConsultaService.getListaConsulta();
         ConsultaService.getListaConsulta().removeAll(listConsulta);
 
-        Medico medico = new Medico(1, "98765432198", "Joao", "Zuim", "CRM8765", "Clinico Geral");
+        Medico medico = new Medico()
+                .comId(1)
+                .comCPF("98765432198")
+                .comNome("Jose")
+                .comSobreNome("Zuim")
+                .comRegistro("CRM8765")
+                .paraEspecialidade("Clinico Geral")
+                .build();
         MedicoService.getListaMedico().add(medico);
 
         doNothing().when(mockMedicoDAO).inserir(anyList());
@@ -108,13 +120,20 @@ public class MedicoServiceTest {
         ProprietarioService.getListaProprietario().clear();
         boolean buscou = false;
 
-        Medico medico1 = new Medico(1, "98765432198", "Joao", "Zuim", "CRM2", "Clinico Geral");
+        Medico medico1 = new Medico()
+                .comId(1)
+                .comCPF("98765432198")
+                .comNome("Jose")
+                .comSobreNome("Zuim")
+                .comRegistro("CRM8765")
+                .paraEspecialidade("Clinico Geral")
+                .build();
         MedicoService.getListaMedico().add(medico1);
 
         doNothing().when(mockMedicoDAO).inserir(anyList());
         Medico medico = mockMedicoService.buscaMedico("CRM2");
 
-        if (medico.getRegistro() == "CRM2"){
+        if (medico.getRegistro().equals("CRM2")){
             buscou = true;
         }
 
@@ -130,18 +149,43 @@ public class MedicoServiceTest {
         List<Consulta> listConsulta = ConsultaService.getListaConsulta();
         ConsultaService.getListaConsulta().removeAll(listConsulta);
 
-        Medico medico = new Medico(1, "98765432198", "Joao", "Zuim", "CRM8765", "Clinico Geral");
+        Medico medico = new Medico()
+                .comId(1)
+                .comCPF("98765432198")
+                .comNome("Jose")
+                .comSobreNome("Zuim")
+                .comRegistro("CRM8765")
+                .paraEspecialidade("Clinico Geral")
+                .build();
 
-        IConsulta consulta = new Consulta().comId(1)
+        Paciente paciente = new Paciente()
+                .comId(1)
+                .comEspecie("cao")
+                .comRaca("dalmata")
+                .comCor("preto")
+                .comDataDeNascimento(LocalDate.now())
+                .comNome("zero")
+                .comProprietario((new Proprietario().
+                        comId(1).
+                        comCpf("12345632101").
+                        comNome("ed").
+                        comSobreNome("nobre").
+                        comDataDeNascimento(LocalDate.now()).
+                        comEndereco("rua zero").
+                        comTelefone(1199998888L).
+                        build()))
+                .build();
+
+        Consulta consulta = new Consulta().comId(1)
                 .comMotivo("rotina")
                 .comDiagnostico("n/a")
                 .comTratamento("n/a")
                 .comMedico(medico)
                 .noPeriodo(LocalDateTime.now())
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
+                .comPaciente(paciente)
+                .build();
 
-        ConsultaService.getListaConsulta().add((Consulta) consulta);
+        ConsultaService.getListaConsulta().add(consulta);
 
         boolean variavel = mockMedicoService.verificarConsulta(medico);
 
@@ -156,7 +200,14 @@ public class MedicoServiceTest {
         List<Consulta> listConsulta = ConsultaService.getListaConsulta();
         ConsultaService.getListaConsulta().removeAll(listConsulta);
 
-        Medico medico = new Medico(1, "98765432198", "Joao", "Zuim", "CRM8765", "Clinico Geral");
+        Medico medico = new Medico()
+                .comId(1)
+                .comCPF("98765432198")
+                .comNome("Jose")
+                .comSobreNome("Zuim")
+                .comRegistro("CRM8765")
+                .paraEspecialidade("Clinico Geral")
+                .build();
 
         boolean variavel = mockMedicoService.verificarConsulta(medico);
 

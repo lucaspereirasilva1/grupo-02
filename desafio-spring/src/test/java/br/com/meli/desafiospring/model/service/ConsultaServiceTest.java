@@ -5,6 +5,8 @@ import br.com.meli.desafiospring.model.dao.ConsultaDAO;
 import br.com.meli.desafiospring.model.dto.ConsultaRequestDTO;
 import br.com.meli.desafiospring.model.dto.ConsultaResponseDTO;
 import br.com.meli.desafiospring.model.entity.*;
+import br.com.meli.desafiospring.model.repository.ConsultaRepository;
+import br.com.meli.desafiospring.model.repository.MedicoRepository;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -19,7 +21,9 @@ class ConsultaServiceTest {
     private final ConsultaDAO mockConsultaDAO = mock(ConsultaDAO.class);
     private final MedicoService mockMedicoService = mock(MedicoService.class);
     private final PacienteService mockPacienteService = mock(PacienteService.class);
-    private final ConsultaService consultaService = new ConsultaService(mockConsultaDAO, mockMedicoService, mockPacienteService);
+    private final ConsultaRepository mockConsultaRepository = mock(ConsultaRepository.class);
+    private final ConsultaService consultaService = new ConsultaService(mockConsultaDAO, mockMedicoService
+            , mockPacienteService, mockConsultaRepository);
 
     public ConsultaServiceTest() {
         geraMassa();
@@ -35,10 +39,32 @@ class ConsultaServiceTest {
                 .when(mockConsultaDAO).inserir(anyList());
 
         when((mockMedicoService).buscaMedico((anyString())))
-                .thenReturn(new Medico(1, "12378909876", "zero", "um", "CRM1", "pediatra"));
+                .thenReturn(new Medico().
+                        comId(1).
+                        comCPF("12378909876").
+                        comNome("zero").
+                        comSobreNome("um").
+                        comRegistro("CRM1").
+                        paraEspecialidade("pediatria").
+                        build());
         when((mockPacienteService).buscaPaciente(anyInt()))
-                .thenReturn(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
+                .thenReturn(new Paciente()
+                        .comId(1)
+                        .comEspecie("cao")
+                        .comRaca("dalmata")
+                        .comCor("preto")
+                        .comDataDeNascimento(LocalDate.now())
+                        .comNome("zero")
+                        .comProprietario((new Proprietario().
+                                comId(1).
+                                comCpf("12345632101").
+                                comNome("ed").
+                                comSobreNome("nobre").
+                                comDataDeNascimento(LocalDate.now()).
+                                comEndereco("rua zero").
+                                comTelefone(1199998888L).
+                                build()))
+                        .build());
 
         Integer id = consultaService.cadastrar(consultaRequestDTO);
 
@@ -193,9 +219,28 @@ class ConsultaServiceTest {
         ConsultaService.getListaConsulta().clear();
         MedicoService.getListaMedico().clear();
 
-        Medico medico1 = new Medico(1, "11111111111", "zero", "um", "CRM1", "pediatra");
-        Medico medico2 = new Medico(2, "22222222222", "um", "tres", "CRM3", "dermatologista");
-        Medico medico3 = new Medico(3, "33333333333", "dois", "quatro", "CRM4", "ortopedista");
+        Medico medico1 = new Medico()
+                .comId(1)
+                .comCPF("11111111111")
+                .comRegistro("CRM1")
+                .paraEspecialidade("pediatra")
+                .build();
+        Medico medico2 = new Medico()
+                .comId(2)
+                .comCPF("22222222222")
+                .comNome("um")
+                .comSobreNome("tres")
+                .comRegistro("CRM3")
+                .paraEspecialidade("dermatologista")
+                .build();
+        Medico medico3 = new Medico()
+                .comId(3)
+                .comCPF("33333333333")
+                .comNome("dois")
+                .comSobreNome("quatro")
+                .comRegistro("CRM4")
+                .paraEspecialidade("ortopedista")
+                .build();
 
         MedicoService.getListaMedico().add(medico1);
         MedicoService.getListaMedico().add(medico2);
@@ -205,33 +250,51 @@ class ConsultaServiceTest {
         LocalDateTime dataHora2 = LocalDateTime.of(2021, 11, 30, 12, 2);
         LocalDateTime dataHora3 = LocalDateTime.of(2021, 12, 31, 12, 2);
 
-        IConsulta consulta1 = new Consulta().comId(1)
+        Paciente paciente = new Paciente()
+                .comId(1)
+                .comEspecie("cao")
+                .comRaca("dalmata")
+                .comCor("preto")
+                .comDataDeNascimento(LocalDate.now())
+                .comNome("zero")
+                .comProprietario((new Proprietario().
+                        comId(1).
+                        comCpf("12345632101").
+                        comNome("ed").
+                        comSobreNome("nobre").
+                        comDataDeNascimento(LocalDate.now()).
+                        comEndereco("rua zero").
+                        comTelefone(1199998888L).
+                        build()))
+                .build();
+
+        Consulta consulta1 = new Consulta().comId(1)
                 .comMotivo("rotina")
                 .comDiagnostico("a realizar")
                 .comTratamento("a realizar")
                 .comMedico(medico1)
                 .noPeriodo(dataHora2)
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
-        IConsulta consulta2 = new Consulta().comId(2)
+                .comPaciente(paciente)
+                .build();
+        Consulta consulta2 = new Consulta().comId(2)
                 .comMotivo("exames")
                 .comDiagnostico("obesidade")
                 .comTratamento("exercicios")
                 .comMedico(medico2)
                 .noPeriodo(dataHora1)
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
-        IConsulta consulta3 = new Consulta().comId(3)
+                .comPaciente(paciente)
+                .build();
+        Consulta consulta3 = new Consulta().comId(3)
                 .comMotivo("cirurgia")
                 .comDiagnostico("apendice")
                 .comTratamento("n/a")
                 .comMedico(medico3)
                 .noPeriodo(dataHora3)
-                .comPaciente(new Paciente(1, "cao", "dalmata", "preto", LocalDate.now(), "zero"
-                        , new Proprietario(1, "12345632101", "ed", "nobre", LocalDate.now(), "rua zero", 1199998888L)));
+                .comPaciente(paciente)
+                .build();
 
-        ConsultaService.getListaConsulta().add((Consulta) consulta1);
-        ConsultaService.getListaConsulta().add((Consulta) consulta2);
-        ConsultaService.getListaConsulta().add((Consulta) consulta3);
+        ConsultaService.getListaConsulta().add(consulta1);
+        ConsultaService.getListaConsulta().add(consulta2);
+        ConsultaService.getListaConsulta().add(consulta3);
     }
 }

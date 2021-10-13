@@ -5,7 +5,6 @@ import br.com.meli.desafiospring.model.service.PacienteService;
 import br.com.meli.desafiospring.util.ArquivoUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +27,5 @@ public class PacienteDAO implements IPersistir<Paciente>{
 
     @Override
     public void salva(Paciente objeto) {
-
     }
 }

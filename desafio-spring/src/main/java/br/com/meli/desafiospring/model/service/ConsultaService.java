@@ -4,9 +4,9 @@ import br.com.meli.desafiospring.exception.ValidaEntradaException;
 import br.com.meli.desafiospring.model.dao.ConsultaDAO;
 import br.com.meli.desafiospring.model.dto.*;
 import br.com.meli.desafiospring.model.entity.Consulta;
-import br.com.meli.desafiospring.model.entity.IConsulta;
 import br.com.meli.desafiospring.model.entity.Medico;
 import br.com.meli.desafiospring.model.entity.Paciente;
+import br.com.meli.desafiospring.model.repository.ConsultaRepository;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -29,27 +29,31 @@ public class ConsultaService {
     private final ConsultaDAO consultaDAO;
     private final MedicoService medicoService;
     private final PacienteService pacienteService;
+    private final ConsultaRepository consultaRepository;
 
     public ConsultaService(ConsultaDAO consultaDAO, MedicoService medicoService
-            , PacienteService pacienteService) {
+            , PacienteService pacienteService, ConsultaRepository consultaRepository) {
         this.consultaDAO = consultaDAO;
         this.medicoService = medicoService;
         this.pacienteService = pacienteService;
+        this.consultaRepository = consultaRepository;
     }
 
     public Integer cadastrar(ConsultaRequestDTO consultaRequestDTO) {
         Medico medico = medicoService.buscaMedico(consultaRequestDTO.getRegistroMedico());
         Paciente paciente = pacienteService.buscaPaciente(consultaRequestDTO.getIdPaciente());
-        IConsulta consulta = new Consulta().comId(listaConsulta.size() + 1)
+        Consulta consulta = new Consulta().comId(listaConsulta.size() + 1)
                 .comMotivo(consultaRequestDTO.getMotivo())
                 .comDiagnostico(consultaRequestDTO.getDiagnostico())
                 .comTratamento(consultaRequestDTO.getTratamento())
                 .comMedico(medico)
                 .noPeriodo(consultaRequestDTO.getDataHora())
-                .comPaciente(paciente);
-        listaConsulta.add((Consulta) consulta);
+                .comPaciente(paciente)
+                .build();
+        listaConsulta.add(consulta);
         consultaDAO.inserir(listaConsulta);
-        return ((Consulta) consulta).getId();
+        consultaRepository.save(consulta);
+        return consulta.getId();
     }
 
     public ConsultaResponseDTO editar(ConsultaRequestDTO consultaRequestDTO, Integer id) {

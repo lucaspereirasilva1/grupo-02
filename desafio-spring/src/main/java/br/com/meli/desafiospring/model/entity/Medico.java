@@ -3,11 +3,11 @@ package br.com.meli.desafiospring.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-
+@AllArgsConstructor
 @Entity
 @Table(name = "medico")
 public class Medico implements IMedico{
@@ -31,6 +31,10 @@ public class Medico implements IMedico{
 
     @Column(name = "especialidade")
     private String especialidade;
+
+    @OneToMany(mappedBy = "medico", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Consulta> listaConsulta;
 
     @Override
     public IMedico comId(Integer id) {
@@ -65,6 +69,11 @@ public class Medico implements IMedico{
     @Override
     public IMedico paraEspecialidade(String especialidade) {
         this.especialidade = especialidade;
+        return this;
+    }
+
+    @Override
+    public Medico build() {
         return this;
     }
 

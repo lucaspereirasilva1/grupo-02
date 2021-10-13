@@ -1,5 +1,6 @@
 package br.com.meli.desafiospring.util;
 
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

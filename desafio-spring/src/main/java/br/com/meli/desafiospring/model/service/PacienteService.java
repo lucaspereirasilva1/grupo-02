@@ -7,6 +7,7 @@ import br.com.meli.desafiospring.model.dto.PacienteResponseDTO;
 import br.com.meli.desafiospring.model.dto.ProprietarioDTO;
 import br.com.meli.desafiospring.model.entity.Consulta;
 import br.com.meli.desafiospring.model.entity.Paciente;
+import br.com.meli.desafiospring.model.repository.PacienteRepository;
 import br.com.meli.desafiospring.util.ConvesorUtil;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class PacienteService {
 
     @Getter
@@ -26,19 +26,22 @@ public class PacienteService {
     private final ProprietarioService proprietarioService;
     private final ConvesorUtil convesorUtil;
     private final PacienteDAO pacienteDAO;
+    private final PacienteRepository pacienteRepository;
 
-    public PacienteService(PacienteDAO pacienteDAO, ProprietarioService proprietarioService, ConvesorUtil convesorUtil) {
+    public PacienteService(PacienteDAO pacienteDAO, ProprietarioService proprietarioService
+            , ConvesorUtil convesorUtil, PacienteRepository pacienteRepository) {
         this.pacienteDAO = pacienteDAO;
         this.proprietarioService = proprietarioService;
         this.convesorUtil = convesorUtil;
+        this.pacienteRepository = pacienteRepository;
     }
 
     public Integer cadastrar (PacienteRequestDTO pacienteRequestDTO) {
         Paciente paciente = (Paciente) convesorUtil.conveterDTO(pacienteRequestDTO, Paciente.class);
-        paciente.setProprietario(proprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
-        paciente.setId(listaPaciente.size() + 1);
+        paciente.comProprietario(proprietarioService.buscarProprietario(pacienteRequestDTO.getIdProprietario()));
         listaPaciente.add(paciente);
         pacienteDAO.inserir(listaPaciente);
+        pacienteRepository.save(paciente);
         return paciente.getId();
     }
 
@@ -47,11 +50,11 @@ public class PacienteService {
                 .findFirst();
         Paciente paciente = optionalPaciente.orElse(null);
         assert paciente != null;
-        paciente.setEspecie(pacienteDTO.getEspecie());
-        paciente.setRaca(pacienteDTO.getRaca());
-        paciente.setCor(pacienteDTO.getCor());
-        paciente.setDataDeNascimento(pacienteDTO.getDataDeNascimento());
-        paciente.setNome(pacienteDTO.getNome());
+        paciente.comEspecie(pacienteDTO.getEspecie());
+        paciente.comRaca(pacienteDTO.getRaca());
+        paciente.comCor(pacienteDTO.getCor());
+        paciente.comDataDeNascimento(pacienteDTO.getDataDeNascimento());
+        paciente.comNome(pacienteDTO.getNome());
         pacienteDAO.inserir(listaPaciente);
 
         PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, PacienteResponseDTO.class);
@@ -60,10 +63,11 @@ public class PacienteService {
     }
 
     public Paciente buscaPaciente(Integer id) {
-        Optional<Paciente> optionalPaciente = listaPaciente.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
-        return optionalPaciente.orElse(null);
+//        Optional<Paciente> optionalPaciente = listaPaciente.stream()
+//                .filter(c -> c.getId().equals(id))
+//                .findFirst();
+        Optional<Paciente> paciente = pacienteRepository.findById(id);
+        return paciente.orElse(null);
     }
 
     public void validaEntrada(PacienteRequestDTO pacienteDTO) {

@@ -75,10 +75,10 @@ public class MedicoService {
         medicoDAO.inserir(listaMedico);
     }
     public Medico buscaMedico(String registro) {
-        Optional<Medico> optionalMedico = listaMedico.stream()
-                .filter(c -> c.getRegistro().equals(registro))
-                .findFirst();
-        return optionalMedico.orElse(null);
+//        Optional<Medico> optionalMedico = listaMedico.stream()
+//                .filter(c -> c.getRegistro().equals(registro))
+//                .findFirst();
+        return medicoRepository.findByRegistro(registro);
     }
     public boolean verificarConsulta(Medico medico) {
         for (Consulta c: ConsultaService.getListaConsulta()) {
