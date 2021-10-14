@@ -100,7 +100,7 @@ public class PacienteServiceTest {
         when((mockConversorUtil).conveterDTO(any(Proprietario.class), any()))
                 .thenReturn(proprietarioDTO);
 
-        PacienteResponseDTO pacienteResponseDTORetorno = pacienteService.editar(pacienteRequestDTO, 1);
+        Integer pacienteResponseDTORetorno = pacienteService.editar(pacienteRequestDTO, 1);
 
         for (Paciente p: PacienteService.getListaPaciente()) {
             if (p.getProprietario().getId().equals(pacienteRequestDTO.getIdProprietario())

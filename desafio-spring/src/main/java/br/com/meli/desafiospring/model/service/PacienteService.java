@@ -45,21 +45,22 @@ public class PacienteService {
         return paciente.getId();
     }
 
-    public PacienteResponseDTO editar(PacienteRequestDTO pacienteDTO, Integer id){
-        Optional<Paciente>optionalPaciente = listaPaciente.stream().filter(c -> c.getId().equals(id))
-                .findFirst();
-        Paciente paciente = optionalPaciente.orElse(null);
-        assert paciente != null;
-        paciente.comEspecie(pacienteDTO.getEspecie());
-        paciente.comRaca(pacienteDTO.getRaca());
-        paciente.comCor(pacienteDTO.getCor());
-        paciente.comDataDeNascimento(pacienteDTO.getDataDeNascimento());
-        paciente.comNome(pacienteDTO.getNome());
+    public Integer editar(PacienteRequestDTO pacienteDTO, Integer id){
+        Paciente paciente = (Paciente) convesorUtil.conveterDTO(pacienteDTO, Paciente.class);
+        paciente.comId(id).comProprietario(proprietarioService.buscarProprietario(pacienteDTO.getIdProprietario()));
+        pacienteRepository.save(paciente);
+//        Optional<Paciente>optionalPaciente = listaPaciente.stream().filter(c -> c.getId().equals(id))
+//                .findFirst();
+//        Paciente paciente = optionalPaciente.orElse(null);
+//        assert paciente != null;
+//        paciente.comEspecie(pacienteDTO.getEspecie());
+//        paciente.comRaca(pacienteDTO.getRaca());
+//        paciente.comCor(pacienteDTO.getCor());
+//        paciente.comDataDeNascimento(pacienteDTO.getDataDeNascimento());
+//        paciente.comNome(pacienteDTO.getNome());
+        listaPaciente.add(paciente);
         pacienteDAO.inserir(listaPaciente);
-
-        PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(paciente, PacienteResponseDTO.class);
-        pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(paciente.getProprietario(), ProprietarioDTO.class));
-        return pacienteResponseDTO;
+        return id;
     }
 
     public Paciente buscaPaciente(Integer id) {
