@@ -121,6 +121,7 @@ public class PacienteService {
 
     public List<PacienteResponseDTO> listar() {
         List<PacienteResponseDTO> listaPacienteResponseDTO = new ArrayList<>();
+        List<Paciente> listaPaciente = pacienteRepository.findAll();
         for (Paciente p: listaPaciente) {
             PacienteResponseDTO pacienteResponseDTO = (PacienteResponseDTO) convesorUtil.conveterDTO(p, PacienteResponseDTO.class);
             pacienteResponseDTO.setProprietarioDTO((ProprietarioDTO) convesorUtil.conveterDTO(p.getProprietario(), ProprietarioDTO.class));
