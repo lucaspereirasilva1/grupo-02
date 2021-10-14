@@ -38,7 +38,7 @@ public class Paciente implements IPaciente{
     @ToString.Exclude
     private Proprietario proprietario;
 
-    @OneToMany(mappedBy = "paciente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Consulta> listaConsulta;
 

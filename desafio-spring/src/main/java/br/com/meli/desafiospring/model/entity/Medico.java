@@ -15,6 +15,7 @@ public class Medico implements IMedico{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Setter(AccessLevel.NONE)
     private Integer id;
 
     @Column(name = "cpf")
